@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Thành viên lớp DK60 - Timeline Ngang (Lazy Load &amp; Tìm kiếm)</title>
+<style>
+        /* === Styles chung === */
+        :root { /* Các biến màu và giao diện toàn trang */
+            --bg-transparent-light: rgba(255, 255, 255, 0.7); /* Nền trắng nhẹ trong suốt */
+            --bg-transparent-darker: rgba(255, 255, 255, 0.85); /* Nền trắng đậm hơn */
+            --text-color: #333; /* Màu chữ chính */
+            --link-color: #1a73e8; /* Màu chữ của liên kết (link) */
+            --border-color-light: rgba(0,0,0,0.1); /* Màu viền sáng nhẹ */
+            --border-color-dark: rgba(0,0,0,0.7); /* Màu viền tối đậm */
+            --shadow-light: 0 4px 10px rgba(0,0,0,0.1); /* Bóng nhẹ */
+            --shadow-medium: 0 5px 20px rgba(0,0,0,0.2); /* Bóng trung bình */
+            --shadow-dark: 0 8px 20px rgba(0,0,0,0.3); /* Bóng đậm */
+        }
+
+        body { /* Cài đặt nền, font chữ và hiệu ứng cho toàn bộ website */
+            font-family: Arial, sans-serif; /* Đặt font chữ chính cho toàn bộ website */
+            background-color: #f4f4f4; /* Màu nền mặc định sáng nhẹ cho trang */
+            color: var(--text-color); /* Sử dụng màu chữ lấy từ biến --text-color */
+            margin: 0; /* Xóa toàn bộ margin mặc định của trình duyệt */
+            padding: 20px; /* Thêm khoảng trống bên trong phần tử */
+            background-image: url('images/bg.png'); /* Đặt ảnh nền cho body */
+            background-size: cover; /* Ảnh nền phủ kín toàn bộ khung nhìn */
+            background-repeat: no-repeat; /* Ảnh nền không lặp lại */
+            background-attachment: fixed; /* Ảnh nền cố định khi cuộn trang */
+            background-position: center; /* Căn giữa ảnh nền */
+            transition: background-position 0.1s ease, opacity 0.6s ease-in-out; /* Hiệu ứng chuyển động vị trí nền và độ mờ */
+            opacity: 0; /* Bắt đầu ẩn để tạo hiệu ứng fade-in */
+        }
+
+        body.fade-in {
+            opacity: 1; /* Hiển thị phần tử rõ ràng, không mờ */
+        }
+
+        img {
+            max-width: 100%; /* Chiều rộng tối đa 100% khung chứa */
+            height: auto; /* Chiều cao tự động theo tỉ lệ ảnh */
+            display: block; /* Ảnh hoặc phần tử dạng khối */
+            border-radius: 10px; /* Bo tròn nhẹ góc hình ảnh */
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none; /* Bỏ gạch chân link */
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Header, Nav, Footer */
+        header { /* Phần tiêu đề (menu trên cùng) */
+            background-color: rgba(255, 255, 255, 0.7);
+            color: #333; /* Màu chữ chính */
+            text-align: center;
+            padding: 20px; /* Thêm khoảng trống bên trong phần tử */
+            border-radius: 8px;
+            margin-bottom: 20px; /* Added space below header */
+            font-weight: bold; /* In đậm chữ */
+        }
+
+        nav {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px; /* Added space below nav */
+        }
+
+        nav ul {
+            list-style: none; /* Bỏ dấu chấm đầu mỗi dòng danh sách */
+            display: flex; /* Sắp xếp các phần tử con theo chiều ngang linh hoạt */
+            justify-content: center; /* Căn giữa các phần tử con */
+            margin: 0; /* Xóa toàn bộ margin mặc định của trình duyệt */
+            padding: 0; /* Xóa khoảng cách lề mặc định */
+            gap: 20px; /* Khoảng cách giữa các phần tử con */
+        }
+
+        nav ul li a {
+            color: #333; /* Màu chữ chính */
+            text-decoration: none; /* Bỏ gạch chân link */
+            font-weight: bold; /* In đậm chữ */
+            padding: 5px 10px; /* Added padding for better click area */
+            border-radius: 4px;
+            transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền khi hover */
+        }
+        nav ul li a:hover {
+            background-color: rgba(0, 0, 0, 0.1); /* Subtle hover effect */
+        }
+
+        h2 { /* Style for the main heading below nav */
+            text-align: center;
+            color: #fff; /* White text for better contrast on background image */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7); /* Add shadow for readability */
+            margin: 30px 0 15px 0; /* Adjust margin bottom */
+        }
+        /* === Footer === */
+        footer {
+            background-color: rgba(255, 255, 255, 0.7);
+            color: #333; /* Màu chữ chính */
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px; /* Tăng khoảng cách với nội dung trên */
+            border-radius: 8px;
+        }
+
+        /* === Styles cho Thanh Tìm Kiếm === */
+        #timelineSearch {
+            display: block; /* Hiển thị dạng khối */
+            width: calc(100% - 40px); /* Chiều rộng gần đầy đủ, trừ padding */
+            max-width: 500px; /* Giới hạn chiều rộng tối đa */
+            margin: 0 auto 20px auto; /* Căn giữa và thêm khoảng cách dưới */
+            padding: 10px 15px;
+            border: 1px solid var(--border-color-light);
+            border-radius: 5px;
+            font-size: 1em;
+            box-shadow: var(--shadow-light);
+            background-color: var(--bg-transparent-darker);
+            color: var(--text-color);
+            outline: none; /* Bỏ viền khi focus */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #timelineSearch:focus {
+            border-color: var(--link-color);
+            box-shadow: 0 0 8px rgba(26, 115, 232, 0.3);
+        }
+
+
+        /* === Styles cho Timeline Ngang === */
+        .timeline-container {
+            width: 100%; /* Chiều rộng đầy đủ của khung nhìn */
+            overflow-x: auto; /* Cho phép cuộn ngang khi nội dung tràn */
+            white-space: nowrap; /* Ngăn các phần tử con xuống dòng */
+            padding-bottom: 15px; /* Thêm khoảng trống dưới để thanh cuộn không che mất nội dung */
+            margin: 20px 0; /* Thêm khoảng cách trên dưới */
+            -webkit-overflow-scrolling: touch; /* Cải thiện cuộn trên thiết bị cảm ứng */
+            background-color: var(--bg-transparent-light); /* Nền nhẹ trong suốt */
+            padding: 20px; /* Khoảng đệm bên trong */
+            border-radius: 10px; /* Bo góc */
+            box-shadow: var(--shadow-light); /* Thêm bóng đổ nhẹ */
+        }
+
+        .timeline-track {
+            display: inline-block; /* Các item sẽ nằm trên một dòng */
+        }
+
+        .timeline-item {
+            display: inline-block; /* Hiển thị các item trên cùng một dòng */
+            vertical-align: top; /* Căn chỉnh theo chiều dọc */
+            margin-right: 20px; /* Khoảng cách giữa các video */
+            width: 300px; /* Chiều rộng cố định cho mỗi video item (có thể điều chỉnh) */
+            max-width: 90%; /* Đảm bảo không quá rộng trên màn hình nhỏ */
+            white-space: normal; /* Cho phép nội dung bên trong item xuống dòng bình thường */
+            text-align: center; /* Căn giữa nội dung trong item */
+            cursor: pointer; /* Biến con trỏ thành bàn tay khi di chuột qua */
+            transition: transform 0.2s ease, box-shadow 0.2s ease; /* Hiệu ứng khi hover */
+            background-color: rgba(255, 255, 255, 0.8); /* Nền item */
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .timeline-item:last-child {
+            margin-right: 0; /* Không thêm khoảng cách cho item cuối cùng */
+        }
+
+        .timeline-item:hover {
+            transform: translateY(-5px); /* Nâng nhẹ item lên khi hover */
+            box-shadow: var(--shadow-medium); /* Bóng đổ đậm hơn khi hover */
+        }
+
+        .timeline-item img {
+             /* Style cho ảnh xem trước */
+             width: 100%;
+             height: auto; /* Giữ tỷ lệ */
+             border-radius: 8px;
+             margin-bottom: 10px;
+        }
+
+
+        /* === Style cho ngày tháng trong timeline === */
+        .timeline-date {
+            text-align: center;
+            font-size: 0.9em; /* Kích thước chữ nhỏ hơn */
+            color: #555; /* Màu chữ hơi xám */
+            margin-top: 0;
+            margin-bottom: 0; /* Bỏ khoảng cách dưới cùng */
+        }
+
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* Tỷ lệ 16:9 (chiều cao / chiều rộng) */
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            background-color: #000; /* Nền đen khi video chưa tải */
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* === Styles cho Popup/Modal Video === */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Nền đen mờ */
+            display: flex; /* Dùng flexbox để căn giữa */
+            justify-content: center; /* Căn giữa theo chiều ngang */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            z-index: 10000; /* Đảm bảo popup nằm trên cùng */
+            opacity: 0; /* Bắt đầu ẩn */
+            visibility: hidden; /* Ẩn hoàn toàn khỏi luồng tài liệu */
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1; /* Hiển thị */
+            visibility: visible; /* Hiển thị */
+        }
+
+        .modal-content {
+            background-color: rgba(255, 255, 255, 0.9); /* Nền trắng hơi trong suốt */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-dark);
+            max-width: 90%; /* Chiều rộng tối đa */
+            width: 700px; /* Chiều rộng ưu tiên */
+            position: relative; /* Để định vị nút đóng */
+            transform: scale(0.9); /* Bắt đầu nhỏ hơn */
+            transition: transform 0.3s ease;
+        }
+
+         .modal-overlay.visible .modal-content {
+             transform: scale(1); /* Phóng to về kích thước thật khi hiện */
+         }
+
+        .modal-content iframe {
+            display: block; /* Hiển thị iframe dạng khối */
+            width: 100%; /* Chiều rộng đầy đủ của container */
+            height: 400px; /* Chiều cao cố định (có thể điều chỉnh hoặc dùng padding-bottom) */
+            border: none;
+            border-radius: 8px;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%; /* Bo tròn thành hình tròn */
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: var(--shadow-light);
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .modal-close-btn:hover {
+            background-color: #ddd;
+            transform: rotate(90deg); /* Xoay khi hover */
+        }
+
+        /* === Styles cho Ảnh/Video Chính ở đầu trang === */
+        .main-class-content {
+            background-color: rgba(255, 255, 255, 0.7);
+            margin: 0 auto 30px auto; /* Căn giữa và thêm khoảng cách dưới */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 800px; /* Giới hạn chiều rộng tối đa */
+            text-align: center; /* Căn giữa nội dung bên trong */
+        }
+
+        .main-class-content img,
+        .main-class-content iframe {
+             max-width: 100%;
+             border-radius: 8px;
+             margin-top: 10px;
+        }
+         .main-class-content .video-wrapper iframe {
+             height: 400px; /* Chiều cao cố định cho video chính */
+         }
+
+
+        /* Styles cho các mục entry cũ */
+        .entry {
+            background-color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .entry h2 {
+            color: #333;
+        }
+        .entry img, .entry iframe {
+            max-width: 100%;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+        .entry a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        .entry a:hover {
+            text-decoration: underline;
+        }
+
+        /* === Responsive Styles === */
+        /* --- Tablet & Large Mobile (<= 768px) --- */
+        @media (max-width: 768px) {
+            body { /* Cài đặt nền, font chữ và hiệu ứng cho toàn bộ website */
+                padding: 15px; /* Giảm padding body */
+            }
+            header, nav, footer {
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+            nav ul {
+                gap: 15px;
+                flex-wrap: wrap; /* Cho phép xuống dòng nếu nav quá dài */
+                justify-content: center; /* Căn giữa các phần tử con */
+            }
+
+            /* --- IMPORTANT: Stack image and info vertically --- */
+            .detail-content-wrapper {
+                flex-direction: column; /* Xếp ảnh và thông tin theo chiều dọc */
+                align-items: center; /* Căn giữa các mục */
+                gap: 25px;
+            }
+            .detail-image-column {
+                width: 80%; /* Ảnh chiếm phần lớn chiều rộng */
+                max-width: 280px; /* Giới hạn kích thước ảnh */
+                min-width: unset; /* Reset min-width */
+            }
+            .detail-info-column {
+                width: 100%; /* Thông tin chiếm toàn bộ chiều rộng */
+                text-align: center; /* Căn giữa text trong cột thông tin */
+            }
+            .detail-info-column p strong {
+                display: block; /* Label hiển thị trên một dòng riêng */
+                margin-bottom: 3px;
+                min-width: unset; /* Reset min-width */
+            }
+            .detail-info-column p span {
+                display: block; /* Nội dung hiển thị dưới label */
+            }
+            #detailMemory {
+                text-align: left; /* Giữ kỷ niệm căn trái */
+            }
+            #detailName {
+                font-size: 24px; /* Giảm cỡ chữ tên */
+            }
+
+            /* trên tablet */
+            #selectOverlay > div {
+                max-width: 80%;
+            }
+
+             /* Responsive cho timeline ngang trên mobile */
+            .timeline-item {
+                 width: 250px; /* Giảm chiều rộng item trên mobile */
+                 margin-right: 15px; /* Giảm khoảng cách */
+                 padding: 10px; /* Giảm padding item */
+            }
+             .timeline-container {
+                 padding: 15px; /* Giảm padding container */
+             }
+             #timelineSearch {
+                 width: calc(100% - 30px); /* Điều chỉnh chiều rộng search bar */
+                 padding: 8px 12px; /* Giảm padding search bar */
+             }
+             .modal-content {
+                 padding: 15px; /* Giảm padding modal */
+             }
+             .modal-content iframe {
+                 height: 300px; /* Giảm chiều cao iframe trong modal */
+             }
+             .modal-close-btn {
+                 width: 25px;
+                 height: 25px;
+                 font-size: 16px;
+                 top: 5px;
+                 right: 5px;
+             }
+             .main-class-content {
+                 padding: 15px; /* Giảm padding ảnh chính */
+                 margin-bottom: 20px;
+             }
+             .main-class-content .video-wrapper iframe {
+                 height: 300px; /* Giảm chiều cao video chính trên tablet */
+             }
+        }
+
+        /* --- Mobile (<= 480px) --- */
+        @media (max-width: 480px) {
+            body { /* Cài đặt nền, font chữ và hiệu ứng cho toàn bộ website */
+                padding: 10px;
+            }
+            #viewAllBtn {
+                top: 10px; left: 10px;
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+
+            /* Layout chi tiết thành viên trên mobile */
+            #memberDetailView { /* Giao diện popup chi tiết thành viên */
+                padding: 20px 15px; /* Giảm padding */
+                margin: 20px auto;
+            }
+            #backToListBtn {
+                width: 100%; /* Nút quay lại chiếm hết chiều rộng */
+                padding: 12px;
+                font-size: 16px;
+            }
+            .detail-image-column {
+                width: 90%;
+                max-width: 240px;
+            }
+            #detailName {
+                font-size: 22px;
+            }
+
+            /* Popup danh sách trên mobile */
+            #selectOverlay > div {
+                padding: 15px;
+                max-width: 95%; /* Popup gần full màn hình */
+                max-height: 85vh;
+            }
+
+            /* Responsive cho timeline ngang trên mobile */
+            .timeline-item {
+                 width: 200px; /* Giảm chiều rộng item hơn nữa trên mobile */
+                 margin-right: 10px; /* Giảm khoảng cách */
+                 padding: 8px; /* Giảm padding item */
+            }
+             .timeline-container {
+                 padding: 10px; /* Giảm padding container */
+             }
+             #timelineSearch {
+                 width: calc(100% - 20px); /* Điều chỉnh chiều rộng search bar */
+                 padding: 6px 10px; /* Giảm padding search bar */
+                 font-size: 0.9em;
+             }
+             .modal-content {
+                 padding: 10px; /* Giảm padding modal */
+             }
+             .modal-content iframe {
+                 height: 200px; /* Giảm chiều cao iframe trong modal */
+             }
+             .modal-close-btn {
+                 width: 20px;
+                 height: 20px;
+                 font-size: 14px;
+                 top: 3px;
+                 right: 3px;
+             }
+             .main-class-content {
+                 padding: 10px; /* Giảm padding ảnh chính */
+                 margin-bottom: 15px;
+             }
+              .main-class-content .video-wrapper iframe {
+                 height: 200px; /* Giảm chiều cao video chính trên mobile */
+             }
+        }
+
+        @media (max-width: 480px) {
+            nav ul {
+                flex-wrap: nowrap !important;
+                justify-content: space-between !important;
+                gap: 6px !important;
+            }
+            nav ul li a {
+                font-size: 13px !important;
+                padding: 4px 8px !important;
+            }
+            header h1 {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Styles cho các mục entry cũ */
+        .entry {
+            background-color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .entry h2 {
+            color: #333;
+        }
+        .entry img, .entry iframe {
+            max-width: 100%;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+        .entry a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        .entry a:hover {
+            text-decoration: underline;
+        }
+    
+
+.timeline-item img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+.timeline-container::-webkit-scrollbar {
+    height: 8px;
+}
+.timeline-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+.timeline-container::-webkit-scrollbar-track {
+    background-color: rgba(253, 252, 252, 0);
+}
+
+
+.timeline-container {
+    overflow-x: auto; /* cuộn */
+}
+</style>
+<link href="images/logo/logo1.png" id="dynamic-favicon" rel="icon" type="image/png"/>
+</head>
+<body>
+<div id="fb-root"></div>
+<header>
+<h1> 🎓 Ký ức về DK60 - Hành trình Thanh Xuân</h1>
+</header>
+<nav>
+<ul>
+<li><a href="index.html">Trang Chủ</a></li>
+<li><a href="about.html">Giới Thiệu</a></li>
+<li><a href="contact.html">Liên Hệ</a></li>
+<li><a href="thanh-vien-lop.html">Thành Viên</a></li>
+</ul>
+</nav>
+<div class="main-class-content">
+<h2>🎓 Tạm Biệt Tuổi Học Trò</h2>
+<p>Tất cả những kí ức đẹp của tuổi trẻ đều được bao gói trong 3 năm học cấp 3. Gửi đi những điều tốt nhất cho nơi này, nơi có thầy cô và bạn bè luôn bên cạnh 💗</p>
+<div class="video-wrapper"><iframe allow="autoplay; fullscreen" allowfullscreen="true" height="450" loading="lazy" src="https://drive.google.com/file/d/1OQJDSPb-Ei0JvvF9LqJDi6rl4PX8_7MZ/preview" style="border-radius: 12px; border: none;" width="100%"></iframe></div>
+<p style="text-align: center; font-style: italic;">🎓 Video buổi kỷ yếu 9/3/2025</p>
+</div>
+<h2>📹 Timeline Video Kỷ Niệm</h2>
+<input id="timelineSearch" placeholder="Tìm kiếm video theo chú thích hoặc ngày tháng..." type="text"/>
+<div class="timeline-container">
+<div class="timeline-track">
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/10jUNqTRo8g-yGGZsVe-87qb1UP4rZyMk/preview">
+<img alt="Ảnh xem trước IMG_1761" src="https://drive.google.com/thumbnail?id=10jUNqTRo8g-yGGZsVe-87qb1UP4rZyMk"/>
+<p class="timeline-date">09/09/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/10PeSAzVHdbeb6u5kLRKWxxTGhqVAk0PJ/preview">
+<img alt="Ảnh xem trước IMG_2085" src="https://drive.google.com/thumbnail?id=10PeSAzVHdbeb6u5kLRKWxxTGhqVAk0PJ"/>
+<p class="timeline-date">28/09/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/10ZMDbuAvioweJSra33DhwrYQnSFcmwCW/preview">
+<img alt="Ảnh xem trước IMG_2086" src="https://drive.google.com/thumbnail?id=10ZMDbuAvioweJSra33DhwrYQnSFcmwCW"/>
+<p class="timeline-date">28/09/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/12YWJPA6qI-yXlgvPZ9eSB8Uzx7rm3XvI/preview">
+<img alt="Ảnh xem trước IMG_2236" src="https://drive.google.com/thumbnail?id=12YWJPA6qI-yXlgvPZ9eSB8Uzx7rm3XvI"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/12T0ctG7R1iLHcLTGJ9TD96DGjOP4xfGE/preview">
+<img alt="Ảnh xem trước IMG_2235(1)" src="https://drive.google.com/thumbnail?id=12T0ctG7R1iLHcLTGJ9TD96DGjOP4xfGE"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/11kghHMHKMc5StLzvZVGDM5HzqMbkPg_u/preview">
+<img alt="Ảnh xem trước IMG_2209(7)" src="https://drive.google.com/thumbnail?id=11kghHMHKMc5StLzvZVGDM5HzqMbkPg_u"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/123hf8TKD0GtPAvSsrxOpmUtxfVFryosQ/preview">
+<img alt="Ảnh xem trước IMG_2235" src="https://drive.google.com/thumbnail?id=123hf8TKD0GtPAvSsrxOpmUtxfVFryosQ"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1289VTf5tVj3PEIr0BtnqPZfi8NNe2Pan/preview">
+<img alt="Ảnh xem trước IMG_2234" src="https://drive.google.com/thumbnail?id=1289VTf5tVj3PEIr0BtnqPZfi8NNe2Pan"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/11cXu3m3F6t0sbFBret_vJpUbg1Ci32nB/preview">
+<img alt="Ảnh xem trước IMG_2233(1)" src="https://drive.google.com/thumbnail?id=11cXu3m3F6t0sbFBret_vJpUbg1Ci32nB"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/11s2S86VVHIf8L7CfVNhXDjPrX45_VO0L/preview">
+<img alt="Ảnh xem trước IMG_2233" src="https://drive.google.com/thumbnail?id=11s2S86VVHIf8L7CfVNhXDjPrX45_VO0L"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/12-9y8_0XvedQJxA_HiuEoFwtpW5E5uiW/preview">
+<img alt="Ảnh xem trước IMG_2232" src="https://drive.google.com/thumbnail?id=12-9y8_0XvedQJxA_HiuEoFwtpW5E5uiW"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/119rJJurPIlaZ3YrBw_PipyxBVrOW72_S/preview">
+<img alt="Ảnh xem trước IMG_2230" src="https://drive.google.com/thumbnail?id=119rJJurPIlaZ3YrBw_PipyxBVrOW72_S"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/11YwIDbeJPyoqNLYd--QSspUMIjbWXAhw/preview">
+<img alt="Ảnh xem trước IMG_2210" src="https://drive.google.com/thumbnail?id=11YwIDbeJPyoqNLYd--QSspUMIjbWXAhw"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/11XcdgyFjftqwyysZyRXmsX2UKnN_usOX/preview">
+<img alt="Ảnh xem trước IMG_2209(9)" src="https://drive.google.com/thumbnail?id=11XcdgyFjftqwyysZyRXmsX2UKnN_usOX"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1207MDjLKQqPiJH-ft6O-B5PRODn2JS_M/preview">
+<img alt="Ảnh xem trước IMG_2209(8)" src="https://drive.google.com/thumbnail?id=1207MDjLKQqPiJH-ft6O-B5PRODn2JS_M"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/10x_m1NJN_qxfXpMS87056WOkJ4gGNqag/preview">
+<img alt="Ảnh xem trước IMG_2209(6)" src="https://drive.google.com/thumbnail?id=10x_m1NJN_qxfXpMS87056WOkJ4gGNqag"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/116xLGVeRKUwIomyqMnpVJrS9wxTk288C/preview">
+<img alt="Ảnh xem trước IMG_2209(5)" src="https://drive.google.com/thumbnail?id=116xLGVeRKUwIomyqMnpVJrS9wxTk288C"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/113Yl9NWfAL1iUYVqRYufHu_BTIVZWG7v/preview">
+<img alt="Ảnh xem trước IMG_2209(4)" src="https://drive.google.com/thumbnail?id=113Yl9NWfAL1iUYVqRYufHu_BTIVZWG7v"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/10PFQ6QSq5IlI04PKH-62crEBYtQwppzj/preview">
+<img alt="Ảnh xem trước IMG_2209(3)" src="https://drive.google.com/thumbnail?id=10PFQ6QSq5IlI04PKH-62crEBYtQwppzj"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/10rtoTkf9LgOVj5v6Vr-0txVBKByblM8E/preview">
+<img alt="Ảnh xem trước IMG_2209(2)" src="https://drive.google.com/thumbnail?id=10rtoTkf9LgOVj5v6Vr-0txVBKByblM8E"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1-rEPlLT2JdZJb1nufx67tYk9Gi701n-5/preview">
+<img alt="Ảnh xem trước IMG_2209(1)" src="https://drive.google.com/thumbnail?id=1-rEPlLT2JdZJb1nufx67tYk9Gi701n-5"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1-eSAd79sqo0cg8jnb2T7R0pB4iOccZvy/preview">
+<img alt="Ảnh xem trước IMG_2209" src="https://drive.google.com/thumbnail?id=1-eSAd79sqo0cg8jnb2T7R0pB4iOccZvy"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1-SkuuqWMc6ETX6KoHwnEn2brVOG5pRpS/preview">
+<img alt="Ảnh xem trước IMG_2208" src="https://drive.google.com/thumbnail?id=1-SkuuqWMc6ETX6KoHwnEn2brVOG5pRpS"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1-VW2Dra4Mo3PlxV7Bj6ep-C4axUbm_wQ/preview">
+<img alt="Ảnh xem trước IMG_2207" src="https://drive.google.com/thumbnail?id=1-VW2Dra4Mo3PlxV7Bj6ep-C4axUbm_wQ"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/11_-dwVrSfeOpqRRG27VeiBDfHRIoQFGp/preview">
+<img alt="Ảnh xem trước IMG_2231" src="https://drive.google.com/thumbnail?id=11_-dwVrSfeOpqRRG27VeiBDfHRIoQFGp"/>
+<p class="timeline-date">02/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/12QLoFsb2VTuDONsTCzjw-eVrTeuJ05AH/preview">
+<img alt="Ảnh xem trước 3b2cd02493f7c39910aac91f903562a3" src="https://drive.google.com/thumbnail?id=12QLoFsb2VTuDONsTCzjw-eVrTeuJ05AH"/>
+<p class="timeline-date">03/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/12h9BffzhmYC5bBNIvG_tC_2WR9EeLV61/preview">
+<img alt="Ảnh xem trước DE993688-173F-462F-976C-8AECCCA03DEB.mov" src="https://drive.google.com/thumbnail?id=12h9BffzhmYC5bBNIvG_tC_2WR9EeLV61"/>
+<p class="timeline-date">03/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/12ZPzoZs1ESmUT_1sYwwwOFUflullTjNc/preview">
+<img alt="Ảnh xem trước IMG_2381(1)" src="https://drive.google.com/thumbnail?id=12ZPzoZs1ESmUT_1sYwwwOFUflullTjNc"/>
+<p class="timeline-date">09/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/12nWcv9pcYXbzGhXzqTDJiIrFXBgXNuRW/preview">
+<img alt="Ảnh xem trước IMG_2381" src="https://drive.google.com/thumbnail?id=12nWcv9pcYXbzGhXzqTDJiIrFXBgXNuRW"/>
+<p class="timeline-date">09/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/153zRtLSRSjjRt3oc-OiEccUcffeN6pPg/preview">
+<img alt="Ảnh xem trước IMG_2665(1)" src="https://drive.google.com/thumbnail?id=153zRtLSRSjjRt3oc-OiEccUcffeN6pPg"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/14CdYiap2CxScjFxGXtZ8bvwcUIRKDClV/preview">
+<img alt="Ảnh xem trước IMG_2611" src="https://drive.google.com/thumbnail?id=14CdYiap2CxScjFxGXtZ8bvwcUIRKDClV"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/150zK6OcYIYh_8zJOLDgZI_FYnqlZ_1kl/preview">
+<img alt="Ảnh xem trước IMG_2684" src="https://drive.google.com/thumbnail?id=150zK6OcYIYh_8zJOLDgZI_FYnqlZ_1kl"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Ncno52FA3Yk0LsNKFGZzblHhWtzBsVlC/preview">
+<img alt="Ảnh xem trước IMG_4401" src="https://drive.google.com/thumbnail?id=1Ncno52FA3Yk0LsNKFGZzblHhWtzBsVlC"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/15WQlYWruqDiCX3xllt_S6Vj1V4r8K9sA/preview">
+<img alt="Ảnh xem trước IMG_2683(1)" src="https://drive.google.com/thumbnail?id=15WQlYWruqDiCX3xllt_S6Vj1V4r8K9sA"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/15JqxR2S9LhR_tIN0zwe9srwk_PNbcOSN/preview">
+<img alt="Ảnh xem trước IMG_2683" src="https://drive.google.com/thumbnail?id=15JqxR2S9LhR_tIN0zwe9srwk_PNbcOSN"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/15SP764f54_zHY6ZjnmgJ6VXxrp9_0kOt/preview">
+<img alt="Ảnh xem trước IMG_2655" src="https://drive.google.com/thumbnail?id=15SP764f54_zHY6ZjnmgJ6VXxrp9_0kOt"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/16B9B9LeflD7MAqsDwSIusbquq4GVQeZE/preview">
+<img alt="Ảnh xem trước IMG_2643" src="https://drive.google.com/thumbnail?id=16B9B9LeflD7MAqsDwSIusbquq4GVQeZE"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/13NMjlMfdF7AWdJrL6Cl5oUDdUuP0VAon/preview">
+<img alt="Ảnh xem trước IMG_2616" src="https://drive.google.com/thumbnail?id=13NMjlMfdF7AWdJrL6Cl5oUDdUuP0VAon"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/15CdZCMQDV7_FtcILDsiTJR96Wc9ln-Nn/preview">
+<img alt="Ảnh xem trước IMG_2665" src="https://drive.google.com/thumbnail?id=15CdZCMQDV7_FtcILDsiTJR96Wc9ln-Nn"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/13cDNLup5b-RxwLiN8e6SoadoKHWqq2jO/preview">
+<img alt="Ảnh xem trước IMG_2609" src="https://drive.google.com/thumbnail?id=13cDNLup5b-RxwLiN8e6SoadoKHWqq2jO"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/159yM5OBJw4Jmo4Oona6MO6OPUEuXtl1H/preview">
+<img alt="Ảnh xem trước IMG_2610" src="https://drive.google.com/thumbnail?id=159yM5OBJw4Jmo4Oona6MO6OPUEuXtl1H"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/13fDHB3A77jFgj4VbdW5MjjK_BsQkg4ZO/preview">
+<img alt="Ảnh xem trước IMG_2593" src="https://drive.google.com/thumbnail?id=13fDHB3A77jFgj4VbdW5MjjK_BsQkg4ZO"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/15Va_Pg6ZuoMGMWWjEu1tpNq-SOYPvv_o/preview">
+<img alt="Ảnh xem trước IMG_2593" src="https://drive.google.com/thumbnail?id=15Va_Pg6ZuoMGMWWjEu1tpNq-SOYPvv_o"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/13-rdsvbVL9CSSDDPrVCDhyb-jzRHMyhv/preview">
+<img alt="Ảnh xem trước IMG_2595" src="https://drive.google.com/thumbnail?id=13-rdsvbVL9CSSDDPrVCDhyb-jzRHMyhv"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/14nJYW4WVi5_rbb3Pg-CnjFwpYqeEIcuu/preview">
+<img alt="Ảnh xem trước IMG_2010" src="https://drive.google.com/thumbnail?id=14nJYW4WVi5_rbb3Pg-CnjFwpYqeEIcuu"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/15obrolvCGsilxhgz0nKl6JvU-d5a43SC/preview">
+<img alt="Ảnh xem trước IMG_2631" src="https://drive.google.com/thumbnail?id=15obrolvCGsilxhgz0nKl6JvU-d5a43SC"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/13fugnKkU85qa_ix16eZzmoZtAbaxo7Dy/preview">
+<img alt="Ảnh xem trước IMG_2596" src="https://drive.google.com/thumbnail?id=13fugnKkU85qa_ix16eZzmoZtAbaxo7Dy"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/13XDDkBg_bfylyyA3vDwAhsXPDqRGgcwQ/preview">
+<img alt="Ảnh xem trước IMG_2632" src="https://drive.google.com/thumbnail?id=13XDDkBg_bfylyyA3vDwAhsXPDqRGgcwQ"/>
+<p class="timeline-date">20/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/15zjZMoEM8Gl2NX6U-KCkcNS-fwWAYrIB/preview">
+<img alt="Ảnh xem trước IMG_2716" src="https://drive.google.com/thumbnail?id=15zjZMoEM8Gl2NX6U-KCkcNS-fwWAYrIB"/>
+<p class="timeline-date">21/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/158-n6A92dRCqmek-wf-ffYdSbpPj1ZoX/preview">
+<img alt="Ảnh xem trước IMG_2714" src="https://drive.google.com/thumbnail?id=158-n6A92dRCqmek-wf-ffYdSbpPj1ZoX"/>
+<p class="timeline-date">21/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/15kUP8F-jVgL37IHBnqzYGnNUCFDgC-zR/preview">
+<img alt="Ảnh xem trước IMG_2717" src="https://drive.google.com/thumbnail?id=15kUP8F-jVgL37IHBnqzYGnNUCFDgC-zR"/>
+<p class="timeline-date">21/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/16BVyZUoaVaAxRlEjPP9D7TyiNWUUwMlN/preview">
+<img alt="Ảnh xem trước IMG_2715" src="https://drive.google.com/thumbnail?id=16BVyZUoaVaAxRlEjPP9D7TyiNWUUwMlN"/>
+<p class="timeline-date">21/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/16O2HVLnHosPvd1Me4U7N4EYiUI1X2Y6A/preview">
+<img alt="Ảnh xem trước IMG_2769" src="https://drive.google.com/thumbnail?id=16O2HVLnHosPvd1Me4U7N4EYiUI1X2Y6A"/>
+<p class="timeline-date">23/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/17hPiha1mBPO03u7d39JfvVIo32lLREJV/preview">
+<img alt="Ảnh xem trước IMG_2851" src="https://drive.google.com/thumbnail?id=17hPiha1mBPO03u7d39JfvVIo32lLREJV"/>
+<p class="timeline-date">24/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/16Qs55tfI4mv8eJjLK_XHvUTcFE1if_19/preview">
+<img alt="Ảnh xem trước IMG_2896(1)" src="https://drive.google.com/thumbnail?id=16Qs55tfI4mv8eJjLK_XHvUTcFE1if_19"/>
+<p class="timeline-date">25/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/16n6ow8etnObEuKkycdIodl3M6IP32b4J/preview">
+<img alt="Ảnh xem trước IMG_2896" src="https://drive.google.com/thumbnail?id=16n6ow8etnObEuKkycdIodl3M6IP32b4J"/>
+<p class="timeline-date">25/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/198e04kL0VbcV0b5-lwEq3fu7aqzYDkW0/preview">
+<img alt="Ảnh xem trước IMG_2986" src="https://drive.google.com/thumbnail?id=198e04kL0VbcV0b5-lwEq3fu7aqzYDkW0"/>
+<p class="timeline-date">27/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/17WBWwshAlJlAgRSpSjU6_hYMDG8_SGOt/preview">
+<img alt="Ảnh xem trước IMG_2988" src="https://drive.google.com/thumbnail?id=17WBWwshAlJlAgRSpSjU6_hYMDG8_SGOt"/>
+<p class="timeline-date">27/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/16aGgMGkaDiVaRJZi8DSUVNXFb0_siG9p/preview">
+<img alt="Ảnh xem trước IMG_2987" src="https://drive.google.com/thumbnail?id=16aGgMGkaDiVaRJZi8DSUVNXFb0_siG9p"/>
+<p class="timeline-date">27/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/17ZWgGaH_lM5-QnHxLn-5QOkQRi_chXna/preview">
+<img alt="Ảnh xem trước IMG_2986" src="https://drive.google.com/thumbnail?id=17ZWgGaH_lM5-QnHxLn-5QOkQRi_chXna"/>
+<p class="timeline-date">27/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/16UjZ27GiKMjOwvpSvF2tnvb99eDVqYa2/preview">
+<img alt="Ảnh xem trước IMG_2990" src="https://drive.google.com/thumbnail?id=16UjZ27GiKMjOwvpSvF2tnvb99eDVqYa2"/>
+<p class="timeline-date">27/10/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/18tW4J1lNHtZyQqMCcpNtLgOGoUtUdrVG/preview">
+<img alt="Ảnh xem trước IMG_3240" src="https://drive.google.com/thumbnail?id=18tW4J1lNHtZyQqMCcpNtLgOGoUtUdrVG"/>
+<p class="timeline-date">15/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/17GUo3o-0V_z95IHY92P0Y4hVDX__l4fd/preview">
+<img alt="Ảnh xem trước IMG_3214" src="https://drive.google.com/thumbnail?id=17GUo3o-0V_z95IHY92P0Y4hVDX__l4fd"/>
+<p class="timeline-date">15/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/17r6HIiEUBm5befODHrir-kb3X5Tuh5cX/preview">
+<img alt="Ảnh xem trước IMG_3248" src="https://drive.google.com/thumbnail?id=17r6HIiEUBm5befODHrir-kb3X5Tuh5cX"/>
+<p class="timeline-date">15/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Akd7aWCJPWP_6g8nOIW-oGKkwNJBep8t/preview">
+<img alt="Ảnh xem trước IMG_3248" src="https://drive.google.com/thumbnail?id=1Akd7aWCJPWP_6g8nOIW-oGKkwNJBep8t"/>
+<p class="timeline-date">15/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/18rHstkfZ649AIFyj3orih3W3kC7KzjYm/preview">
+<img alt="Ảnh xem trước IMG_3255" src="https://drive.google.com/thumbnail?id=18rHstkfZ649AIFyj3orih3W3kC7KzjYm"/>
+<p class="timeline-date">15/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/189mwHdjndTYezZs9DWBYGNXx9V8g0sSa/preview">
+<img alt="Ảnh xem trước IMG_3244" src="https://drive.google.com/thumbnail?id=189mwHdjndTYezZs9DWBYGNXx9V8g0sSa"/>
+<p class="timeline-date">15/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/17dOcZMuMAM9TprIjS0cDd78qcBVqNmd4/preview">
+<img alt="Ảnh xem trước IMG_3239" src="https://drive.google.com/thumbnail?id=17dOcZMuMAM9TprIjS0cDd78qcBVqNmd4"/>
+<p class="timeline-date">15/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/17vZHK72s8YFt24FJx7sfiggjpv2K3g5h/preview">
+<img alt="Ảnh xem trước IMG_3213" src="https://drive.google.com/thumbnail?id=17vZHK72s8YFt24FJx7sfiggjpv2K3g5h"/>
+<p class="timeline-date">15/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/17RYkCbgp7hLjfqAtyhFYZU5O2R8SBCgM/preview">
+<img alt="Ảnh xem trước IMG_3212" src="https://drive.google.com/thumbnail?id=17RYkCbgp7hLjfqAtyhFYZU5O2R8SBCgM"/>
+<p class="timeline-date">15/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/18KMrn11myL_WEveKFdgi_Gs1P9InUA4H/preview">
+<img alt="Ảnh xem trước IMG_3245" src="https://drive.google.com/thumbnail?id=18KMrn11myL_WEveKFdgi_Gs1P9InUA4H"/>
+<p class="timeline-date">15/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1D2UnscBU2h_6LZ61l87Xl5VxJp2i0I9s/preview">
+<img alt="Ảnh xem trước IMG_3257" src="https://drive.google.com/thumbnail?id=1D2UnscBU2h_6LZ61l87Xl5VxJp2i0I9s"/>
+<p class="timeline-date">16/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/182lEEn2FEQpGXyeSi7KXh6w4v9ndR6EK/preview">
+<img alt="Ảnh xem trước IMG_3257" src="https://drive.google.com/thumbnail?id=182lEEn2FEQpGXyeSi7KXh6w4v9ndR6EK"/>
+<p class="timeline-date">16/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/18BRoQSKGTIY0Q0gWIdAXw_8NfxXS5Vv_/preview">
+<img alt="Ảnh xem trước IMG_3272" src="https://drive.google.com/thumbnail?id=18BRoQSKGTIY0Q0gWIdAXw_8NfxXS5Vv_"/>
+<p class="timeline-date">16/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/19qSTX9DTlDdKFNkS86W44hOw4VX5Y0by/preview">
+<img alt="Ảnh xem trước IMG_3288" src="https://drive.google.com/thumbnail?id=19qSTX9DTlDdKFNkS86W44hOw4VX5Y0by"/>
+<p class="timeline-date">17/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/19S1zqkORqzuBznhCoE26w0YhqBBi-h-6/preview">
+<img alt="Ảnh xem trước IMG_3300" src="https://drive.google.com/thumbnail?id=19S1zqkORqzuBznhCoE26w0YhqBBi-h-6"/>
+<p class="timeline-date">17/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/19pavveUC-IZXa3O91BYyWjM7P7HyzZvp/preview">
+<img alt="Ảnh xem trước IMG_3343" src="https://drive.google.com/thumbnail?id=19pavveUC-IZXa3O91BYyWjM7P7HyzZvp"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/19tJsgUoIzUrpU-bUkuorZ6Go951rSQPe/preview">
+<img alt="Ảnh xem trước IMG_3773" src="https://drive.google.com/thumbnail?id=19tJsgUoIzUrpU-bUkuorZ6Go951rSQPe"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/19mRfvx99-aIL8LMOXERqB48JY1kV5DLu/preview">
+<img alt="Ảnh xem trước IMG_3343(1)" src="https://drive.google.com/thumbnail?id=19mRfvx99-aIL8LMOXERqB48JY1kV5DLu"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/19yfm28vWVvZBb-k_IMtnzBqiskZd3MUN/preview">
+<img alt="Ảnh xem trước IMG_3728" src="https://drive.google.com/thumbnail?id=19yfm28vWVvZBb-k_IMtnzBqiskZd3MUN"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/18VxddW3EFJtNwLJmkdjriCyDC3dtT80V/preview">
+<img alt="Ảnh xem trước IMG_3756" src="https://drive.google.com/thumbnail?id=18VxddW3EFJtNwLJmkdjriCyDC3dtT80V"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/19sLeszB00UfH9P1QTOhV8MyvDgD8I53F/preview">
+<img alt="Ảnh xem trước IMG_3342" src="https://drive.google.com/thumbnail?id=19sLeszB00UfH9P1QTOhV8MyvDgD8I53F"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1AgWwOTaiLklo8bOmYcyGmwLwVSL2PSA0/preview">
+<img alt="Ảnh xem trước IMG_3341" src="https://drive.google.com/thumbnail?id=1AgWwOTaiLklo8bOmYcyGmwLwVSL2PSA0"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/19GU7vyf2GHxag0WuMYnNUORfcbjSFZGM/preview">
+<img alt="Ảnh xem trước IMG_3764" src="https://drive.google.com/thumbnail?id=19GU7vyf2GHxag0WuMYnNUORfcbjSFZGM"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1AG7eFc4UZ-1PaG-1ilHqYNaTA7HVhrOF/preview">
+<img alt="Ảnh xem trước IMG_2777" src="https://drive.google.com/thumbnail?id=1AG7eFc4UZ-1PaG-1ilHqYNaTA7HVhrOF"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/19oAQh98Yjh2J0h9e833BW1uTCaO4D80k/preview">
+<img alt="Ảnh xem trước IMG_3334" src="https://drive.google.com/thumbnail?id=19oAQh98Yjh2J0h9e833BW1uTCaO4D80k"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/19DGjAKgR6x9AGyoGHTxOzVLe9Q4HA7r1/preview">
+<img alt="Ảnh xem trước IMG_3340" src="https://drive.google.com/thumbnail?id=19DGjAKgR6x9AGyoGHTxOzVLe9Q4HA7r1"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/192eQYOAgh4_ZUgfpswplAW0_C1ELJ-Ju/preview">
+<img alt="Ảnh xem trước IMG_3332(1)" src="https://drive.google.com/thumbnail?id=192eQYOAgh4_ZUgfpswplAW0_C1ELJ-Ju"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1AJQRc3Xb_oSJwe7eo01ldeMfwqjD-Gc5/preview">
+<img alt="Ảnh xem trước IMG_3807" src="https://drive.google.com/thumbnail?id=1AJQRc3Xb_oSJwe7eo01ldeMfwqjD-Gc5"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/19ld0jx6OS3OaNpshz9uXRh6DQZmo-Cjn/preview">
+<img alt="Ảnh xem trước IMG_3763" src="https://drive.google.com/thumbnail?id=19ld0jx6OS3OaNpshz9uXRh6DQZmo-Cjn"/>
+<p class="timeline-date">19/11/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1BBvYw3ugeARruf0hx6VAZEsU6zHx_tpN/preview">
+<img alt="Ảnh xem trước IMG_3538" src="https://drive.google.com/thumbnail?id=1BBvYw3ugeARruf0hx6VAZEsU6zHx_tpN"/>
+<p class="timeline-date">01/12/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1BV0L-GX69cfbfGIz5P9U3AuxO3ddmpSh/preview">
+<img alt="Ảnh xem trước IMG_3585" src="https://drive.google.com/thumbnail?id=1BV0L-GX69cfbfGIz5P9U3AuxO3ddmpSh"/>
+<p class="timeline-date">05/12/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1CeHzrYk6PCWcrsJM5lGB2ihcQXho0ZTM/preview">
+<img alt="Ảnh xem trước IMG_3594" src="https://drive.google.com/thumbnail?id=1CeHzrYk6PCWcrsJM5lGB2ihcQXho0ZTM"/>
+<p class="timeline-date">05/12/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1BuapCo_YhoLSiiDPcg_e-B5hxjs1enHW/preview">
+<img alt="Ảnh xem trước IMG_3606" src="https://drive.google.com/thumbnail?id=1BuapCo_YhoLSiiDPcg_e-B5hxjs1enHW"/>
+<p class="timeline-date">06/12/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1AujqIWDPpdvSMVZgSEkHoLAC8fZnB1Pr/preview">
+<img alt="Ảnh xem trước IMG_3606(1)" src="https://drive.google.com/thumbnail?id=1AujqIWDPpdvSMVZgSEkHoLAC8fZnB1Pr"/>
+<p class="timeline-date">06/12/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1B6-ff00gcPcaxwhR8Zk5XrwxG8KvG8x4/preview">
+<img alt="Ảnh xem trước IMG_3762" src="https://drive.google.com/thumbnail?id=1B6-ff00gcPcaxwhR8Zk5XrwxG8KvG8x4"/>
+<p class="timeline-date">13/12/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1D0zMbdTfJN1VYc12C52QD8KiBrkMsd8-/preview">
+<img alt="Ảnh xem trước IMG_3761(1)" src="https://drive.google.com/thumbnail?id=1D0zMbdTfJN1VYc12C52QD8KiBrkMsd8-"/>
+<p class="timeline-date">13/12/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1CVoDIUHGshT-j1u_ncyXKIooXWzP7N9n/preview">
+<img alt="Ảnh xem trước IMG_3761" src="https://drive.google.com/thumbnail?id=1CVoDIUHGshT-j1u_ncyXKIooXWzP7N9n"/>
+<p class="timeline-date">13/12/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1CqSv2dQfYnKQRhhx1h7IKHZJxPxlKUMN/preview">
+<img alt="Ảnh xem trước VID_20231216_152713" src="https://drive.google.com/thumbnail?id=1CqSv2dQfYnKQRhhx1h7IKHZJxPxlKUMN"/>
+<p class="timeline-date">16/12/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1DTmvKI5oNfN1a2QP2zBQh2wOhf47I84m/preview">
+<img alt="Ảnh xem trước IMG_3866" src="https://drive.google.com/thumbnail?id=1DTmvKI5oNfN1a2QP2zBQh2wOhf47I84m"/>
+<p class="timeline-date">18/12/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1CF0BIR2E9MsS6OgXChTjxzn3Bhya-q0G/preview">
+<img alt="Ảnh xem trước IMG_3867" src="https://drive.google.com/thumbnail?id=1CF0BIR2E9MsS6OgXChTjxzn3Bhya-q0G"/>
+<p class="timeline-date">18/12/2023</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1BwHRQS1H_vI_pV7aajJtfCXqCQ5LpLpl/preview">
+<img alt="Ảnh xem trước IMG_4135" src="https://drive.google.com/thumbnail?id=1BwHRQS1H_vI_pV7aajJtfCXqCQ5LpLpl"/>
+<p class="timeline-date">02/01/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1C546gAniiQIAqWGvbBFPMBa8oAP30av6/preview">
+<img alt="Ảnh xem trước IMG_4135(1)" src="https://drive.google.com/thumbnail?id=1C546gAniiQIAqWGvbBFPMBa8oAP30av6"/>
+<p class="timeline-date">02/01/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1BvOgYoS9jGMfD9IjgIHfoRdhyr-1NKTO/preview">
+<img alt="Ảnh xem trước IMG_4135(2)" src="https://drive.google.com/thumbnail?id=1BvOgYoS9jGMfD9IjgIHfoRdhyr-1NKTO"/>
+<p class="timeline-date">02/01/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1EQm4_6JWx1Nh2y634Fx21UTyssB1Zs_U/preview">
+<img alt="Ảnh xem trước IMG_4207" src="https://drive.google.com/thumbnail?id=1EQm4_6JWx1Nh2y634Fx21UTyssB1Zs_U"/>
+<p class="timeline-date">05/01/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1DjXf89vzdiWPkPAfQqKXi9OTIA40Jf33/preview">
+<img alt="Ảnh xem trước IMG_4205" src="https://drive.google.com/thumbnail?id=1DjXf89vzdiWPkPAfQqKXi9OTIA40Jf33"/>
+<p class="timeline-date">05/01/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1EKZpPaQTf-R3srGJYOEcFoXEYAFFrpSO/preview">
+<img alt="Ảnh xem trước Dk60 - 16 Sep 2023 – 9 Jan 2024.mov" src="https://drive.google.com/thumbnail?id=1EKZpPaQTf-R3srGJYOEcFoXEYAFFrpSO"/>
+<p class="timeline-date">09/01/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Dm6Qi3U1u_iYpiTHA8IZL4hkImCOUvAt/preview">
+<img alt="Ảnh xem trước IMG_4700" src="https://drive.google.com/thumbnail?id=1Dm6Qi3U1u_iYpiTHA8IZL4hkImCOUvAt"/>
+<p class="timeline-date">25/01/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1E2v_qNyXMTuxqHPW2B5U_QMWKfvgPW3e/preview">
+<img alt="Ảnh xem trước IMG_4698" src="https://drive.google.com/thumbnail?id=1E2v_qNyXMTuxqHPW2B5U_QMWKfvgPW3e"/>
+<p class="timeline-date">25/01/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Eu8mvxg75BgQa_Y5rL1Jr4AH0VzlLy24/preview">
+<img alt="Ảnh xem trước IMG_4701" src="https://drive.google.com/thumbnail?id=1Eu8mvxg75BgQa_Y5rL1Jr4AH0VzlLy24"/>
+<p class="timeline-date">25/01/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Dhhkw-sLlidf_BYiobLlV7OTDJIQa-D0/preview">
+<img alt="Ảnh xem trước IMG_4715" src="https://drive.google.com/thumbnail?id=1Dhhkw-sLlidf_BYiobLlV7OTDJIQa-D0"/>
+<p class="timeline-date">27/01/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1OJkTuacIZKtnMubv0SXSedn978eGCPPq/preview">
+<img alt="Ảnh xem trước IMG_4402" src="https://drive.google.com/thumbnail?id=1OJkTuacIZKtnMubv0SXSedn978eGCPPq"/>
+<p class="timeline-date">18/02/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1FqwkLJXeVPCvR6unStGZZ78xh2MF1NrD/preview">
+<img alt="Ảnh xem trước IMG_20240219_093636" src="https://drive.google.com/thumbnail?id=1FqwkLJXeVPCvR6unStGZZ78xh2MF1NrD"/>
+<p class="timeline-date">19/02/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1ESIYEfhjdW-DREP60qjPAZ3Myz6bLwUN/preview">
+<img alt="Ảnh xem trước IMG_5096" src="https://drive.google.com/thumbnail?id=1ESIYEfhjdW-DREP60qjPAZ3Myz6bLwUN"/>
+<p class="timeline-date">26/02/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1HW7ZI_Kr7DWy2hnvS-t_VXs9CSdZwvsF/preview">
+<img alt="Ảnh xem trước 2025-03-31" src="https://drive.google.com/thumbnail?id=1HW7ZI_Kr7DWy2hnvS-t_VXs9CSdZwvsF"/>
+<p class="timeline-date">27/02/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1JBKNwgyztR0mxvvl4Xu81fHsJmgkey61/preview">
+<img alt="Ảnh xem trước IMG_20240301_083332" src="https://drive.google.com/thumbnail?id=1JBKNwgyztR0mxvvl4Xu81fHsJmgkey61"/>
+<p class="timeline-date">01/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1FUKcKjX2FgfY3SVV7LqbwyMoXQx93DJ8/preview">
+<img alt="Ảnh xem trước IMG_5258" src="https://drive.google.com/thumbnail?id=1FUKcKjX2FgfY3SVV7LqbwyMoXQx93DJ8"/>
+<p class="timeline-date">06/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1FdHOmWYglopRoKkh5D4D4hBZxwXnbsqd/preview">
+<img alt="Ảnh xem trước IMG_5279" src="https://drive.google.com/thumbnail?id=1FdHOmWYglopRoKkh5D4D4hBZxwXnbsqd"/>
+<p class="timeline-date">08/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1F-ifgtiCn2qyb8ghMXznQatzDZ1Xwb5g/preview">
+<img alt="Ảnh xem trước IMG_5293" src="https://drive.google.com/thumbnail?id=1F-ifgtiCn2qyb8ghMXznQatzDZ1Xwb5g"/>
+<p class="timeline-date">08/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1HGeAfZEKCDA3sPPE1ek7kZzJL1UFQigF/preview">
+<img alt="Ảnh xem trước IMG_5289" src="https://drive.google.com/thumbnail?id=1HGeAfZEKCDA3sPPE1ek7kZzJL1UFQigF"/>
+<p class="timeline-date">08/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1EZgdK9TZbDG05LilSjJcEYCEW5Nk5AvP/preview">
+<img alt="Ảnh xem trước 1HOE6GK5M_9O4HCK" src="https://drive.google.com/thumbnail?id=1EZgdK9TZbDG05LilSjJcEYCEW5Nk5AvP"/>
+<p class="timeline-date">08/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1FEQw2P-hNehHr_1adLkZ8l8WkDxYBqgL/preview">
+<img alt="Ảnh xem trước IMG_5273" src="https://drive.google.com/thumbnail?id=1FEQw2P-hNehHr_1adLkZ8l8WkDxYBqgL"/>
+<p class="timeline-date">08/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1FhyoK04AZ9Tt6r1xZZHH-gTmtiW-uWLP/preview">
+<img alt="Ảnh xem trước IMG_5696" src="https://drive.google.com/thumbnail?id=1FhyoK04AZ9Tt6r1xZZHH-gTmtiW-uWLP"/>
+<p class="timeline-date">23/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1H492tENFeYReaB-cEJYG9nrccLZEbuVZ/preview">
+<img alt="Ảnh xem trước IMG_5695" src="https://drive.google.com/thumbnail?id=1H492tENFeYReaB-cEJYG9nrccLZEbuVZ"/>
+<p class="timeline-date">23/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1lJOgIdpNjXj070MIMLj79oE3WkGbY08n/preview">
+<img alt="Ảnh xem trước 88D87B88-A72C-4BB8-B879-E6D17B5B1F53" src="https://drive.google.com/thumbnail?id=1lJOgIdpNjXj070MIMLj79oE3WkGbY08n"/>
+<p class="timeline-date">24/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1NLOWMIY3EnrKF2qeT8Cask8RgZbQmqUk/preview">
+<img alt="Ảnh xem trước 43f685400caf3b9e0fb5ce32246d7857" src="https://drive.google.com/thumbnail?id=1NLOWMIY3EnrKF2qeT8Cask8RgZbQmqUk"/>
+<p class="timeline-date">24/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1fqPa5WQ0ewvDC6jS5ZVrkTAL8Nqxgvd2/preview">
+<img alt="Ảnh xem trước 1054B207-6EBC-45C8-BCE1-6212062E647A" src="https://drive.google.com/thumbnail?id=1fqPa5WQ0ewvDC6jS5ZVrkTAL8Nqxgvd2"/>
+<p class="timeline-date">24/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1ODts0YGlhnChzxSbLBdUtMEtBgS4bPHD/preview">
+<img alt="Ảnh xem trước 1HNS5KR92_9E0M02" src="https://drive.google.com/thumbnail?id=1ODts0YGlhnChzxSbLBdUtMEtBgS4bPHD"/>
+<p class="timeline-date">24/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1OFR52c51fr9yX2aAKxiEtgttZw7cphBU/preview">
+<img alt="Ảnh xem trước IMG_5179" src="https://drive.google.com/thumbnail?id=1OFR52c51fr9yX2aAKxiEtgttZw7cphBU"/>
+<p class="timeline-date">24/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Erjj5F6m64-I1TJ4Za5VeuF4RoKFLvZ7/preview">
+<img alt="Ảnh xem trước IMG_5132" src="https://drive.google.com/thumbnail?id=1Erjj5F6m64-I1TJ4Za5VeuF4RoKFLvZ7"/>
+<p class="timeline-date">24/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1FclIQLMZzKgZ0D9ZvdR6pzyr3_oMZZ7h/preview">
+<img alt="Ảnh xem trước IMG_5133" src="https://drive.google.com/thumbnail?id=1FclIQLMZzKgZ0D9ZvdR6pzyr3_oMZZ7h"/>
+<p class="timeline-date">24/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1OXqAO3eur_N-iODiu97euax12uCRJW6K/preview">
+<img alt="Ảnh xem trước IMG_5178" src="https://drive.google.com/thumbnail?id=1OXqAO3eur_N-iODiu97euax12uCRJW6K"/>
+<p class="timeline-date">24/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1NAlcekq-frmht8_05drTjamrG37qmhTW/preview">
+<img alt="Ảnh xem trước IMG_5180" src="https://drive.google.com/thumbnail?id=1NAlcekq-frmht8_05drTjamrG37qmhTW"/>
+<p class="timeline-date">24/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1O96c3fao3nsdXEAiklnhtDydtTSj6oVZ/preview">
+<img alt="Ảnh xem trước IMG_5811" src="https://drive.google.com/thumbnail?id=1O96c3fao3nsdXEAiklnhtDydtTSj6oVZ"/>
+<p class="timeline-date">24/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Kr_fWxU0CiA7vgL9GYRcFIfAk1lxQ7SY/preview">
+<img alt="Ảnh xem trước 2025-03-31(1)" src="https://drive.google.com/thumbnail?id=1Kr_fWxU0CiA7vgL9GYRcFIfAk1lxQ7SY"/>
+<p class="timeline-date">31/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1IEL-erNVDJMtCeYlC3uzG3vLEyB4MFpV/preview">
+<img alt="Ảnh xem trước 2025-03-31(2)" src="https://drive.google.com/thumbnail?id=1IEL-erNVDJMtCeYlC3uzG3vLEyB4MFpV"/>
+<p class="timeline-date">31/03/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1GgYxnUd_QKP3Kwj0R3uD0hwTLf1ke2Vx/preview">
+<img alt="Ảnh xem trước shared_video_A22A4F80-A2BA-4731-B10C-EEA682E050" src="https://drive.google.com/thumbnail?id=1GgYxnUd_QKP3Kwj0R3uD0hwTLf1ke2Vx"/>
+<p class="timeline-date">12/04/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1FrRSXYVCPQg15L0mZHtuQcc4r5Jm8W-E/preview">
+<img alt="Ảnh xem trước shared_video_6CCF59FF-35F6-4409-881E-8AD6BED553" src="https://drive.google.com/thumbnail?id=1FrRSXYVCPQg15L0mZHtuQcc4r5Jm8W-E"/>
+<p class="timeline-date">12/04/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1H6eCRECsELQ_gfvYbBV0ToAoZAdcE8lH/preview">
+<img alt="Ảnh xem trước e26be9e5b85f76cadd060419e14206a7" src="https://drive.google.com/thumbnail?id=1H6eCRECsELQ_gfvYbBV0ToAoZAdcE8lH"/>
+<p class="timeline-date">15/04/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1H3ErM27Nfb8r52KidCOfCY5ins6Yic1_/preview">
+<img alt="Ảnh xem trước VID_20240426_110600" src="https://drive.google.com/thumbnail?id=1H3ErM27Nfb8r52KidCOfCY5ins6Yic1_"/>
+<p class="timeline-date">26/04/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Gil9PPdWjmaQQdqFkYMiMZLRQ4JlQblH/preview">
+<img alt="Ảnh xem trước VIDEO_DOWNLOAD_1714553293240_1714553474408" src="https://drive.google.com/thumbnail?id=1Gil9PPdWjmaQQdqFkYMiMZLRQ4JlQblH"/>
+<p class="timeline-date">01/05/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1JTaqv-uHVeaUkbE5zT-0LAW6cihgHipK/preview">
+<img alt="Ảnh xem trước IMG_7604" src="https://drive.google.com/thumbnail?id=1JTaqv-uHVeaUkbE5zT-0LAW6cihgHipK"/>
+<p class="timeline-date">28/05/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1H73xyeuT-QHLU-9UuzG4Kpu3omoDE9U9/preview">
+<img alt="Ảnh xem trước IMG_7605" src="https://drive.google.com/thumbnail?id=1H73xyeuT-QHLU-9UuzG4Kpu3omoDE9U9"/>
+<p class="timeline-date">28/05/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1HnhlJHz07tMsitd1zBw5kVpVZrnWOQuJ/preview">
+<img alt="Ảnh xem trước IMG_7798" src="https://drive.google.com/thumbnail?id=1HnhlJHz07tMsitd1zBw5kVpVZrnWOQuJ"/>
+<p class="timeline-date">02/06/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/12h5heOH0UX4_TMjlZkpsUv-jObX8yXYm/preview">
+<img alt="Ảnh xem trước 1696297282047" src="https://drive.google.com/thumbnail?id=12h5heOH0UX4_TMjlZkpsUv-jObX8yXYm"/>
+<p class="timeline-date">03/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1HkBtFGLmqXW36GsDFmXxGel1EQZ3iGwb/preview">
+<img alt="Ảnh xem trước IMG_8635" src="https://drive.google.com/thumbnail?id=1HkBtFGLmqXW36GsDFmXxGel1EQZ3iGwb"/>
+<p class="timeline-date">05/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1HBIXhnSozshR6sOcbUgIsSuLKKrPVY7F/preview">
+<img alt="Ảnh xem trước Copy of copy_1C5CB8BA-A0EA-4FAB-9B10-150AB28F44" src="https://drive.google.com/thumbnail?id=1HBIXhnSozshR6sOcbUgIsSuLKKrPVY7F"/>
+<p class="timeline-date">07/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1H7nSGzEKiUqDMNucD6DxSEj6msnjYLiL/preview">
+<img alt="Ảnh xem trước Copy of IMG_2406" src="https://drive.google.com/thumbnail?id=1H7nSGzEKiUqDMNucD6DxSEj6msnjYLiL"/>
+<p class="timeline-date">07/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1JGdi9AUCJnt727OVDHg4CSTQyBuPBIwB/preview">
+<img alt="Ảnh xem trước Copy of IMG_2458" src="https://drive.google.com/thumbnail?id=1JGdi9AUCJnt727OVDHg4CSTQyBuPBIwB"/>
+<p class="timeline-date">11/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1HZBQLR98dyzjtOU7lwOwcKmISBvZeeKc/preview">
+<img alt="Ảnh xem trước Copy of IMG_2470" src="https://drive.google.com/thumbnail?id=1HZBQLR98dyzjtOU7lwOwcKmISBvZeeKc"/>
+<p class="timeline-date">12/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1HKhdLwXtbqsgBDme9scP7xrBw3KVNOxb/preview">
+<img alt="Ảnh xem trước Copy of IMG_2500" src="https://drive.google.com/thumbnail?id=1HKhdLwXtbqsgBDme9scP7xrBw3KVNOxb"/>
+<p class="timeline-date">14/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1JPMkDdjlpdkQFPOYxBJUE2EF2M8njls6/preview">
+<img alt="Ảnh xem trước Copy of IMG_2524" src="https://drive.google.com/thumbnail?id=1JPMkDdjlpdkQFPOYxBJUE2EF2M8njls6"/>
+<p class="timeline-date">15/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1HpPW1ZfD7MZ4X63nbg4QWfholDfmg4rd/preview">
+<img alt="Ảnh xem trước Copy of IMG_2603" src="https://drive.google.com/thumbnail?id=1HpPW1ZfD7MZ4X63nbg4QWfholDfmg4rd"/>
+<p class="timeline-date">17/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1JNVtahti3kW5aiwkqLX0FDPCA9P-L54P/preview">
+<img alt="Ảnh xem trước Copy of IMG_2613" src="https://drive.google.com/thumbnail?id=1JNVtahti3kW5aiwkqLX0FDPCA9P-L54P"/>
+<p class="timeline-date">17/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1JGlJXPNmvoQAy1vkdGsEXjqdDrDfw48I/preview">
+<img alt="Ảnh xem trước Copy of IMG_2612" src="https://drive.google.com/thumbnail?id=1JGlJXPNmvoQAy1vkdGsEXjqdDrDfw48I"/>
+<p class="timeline-date">17/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1I0EPwlhswZ72m2I2oz4kX7HOi-J2zNah/preview">
+<img alt="Ảnh xem trước Copy of IMG_2604" src="https://drive.google.com/thumbnail?id=1I0EPwlhswZ72m2I2oz4kX7HOi-J2zNah"/>
+<p class="timeline-date">17/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1KIGXt0TmSvg1VBRNGcvJfA6N5YHCCa4u/preview">
+<img alt="Ảnh xem trước VID_20241018_200847" src="https://drive.google.com/thumbnail?id=1KIGXt0TmSvg1VBRNGcvJfA6N5YHCCa4u"/>
+<p class="timeline-date">18/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1JOLLYuG17nuBBD7QfCPgS4yGJtD_xBTh/preview">
+<img alt="Ảnh xem trước Copy of IMG_2644" src="https://drive.google.com/thumbnail?id=1JOLLYuG17nuBBD7QfCPgS4yGJtD_xBTh"/>
+<p class="timeline-date">18/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1JXE2nqyuNXcUBbBPCUZI-hIH-gcU2Pc9/preview">
+<img alt="Ảnh xem trước VID_20241018_202145" src="https://drive.google.com/thumbnail?id=1JXE2nqyuNXcUBbBPCUZI-hIH-gcU2Pc9"/>
+<p class="timeline-date">18/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1KHGFa-pevqWJy6XwdX636aTk0DKsuw1W/preview">
+<img alt="Ảnh xem trước Copy of IMG_2667" src="https://drive.google.com/thumbnail?id=1KHGFa-pevqWJy6XwdX636aTk0DKsuw1W"/>
+<p class="timeline-date">19/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Kh6fbMMuggK5KDvZ-HLVoCyd2a4EHaKY/preview">
+<img alt="Ảnh xem trước Copy of IMG_2680" src="https://drive.google.com/thumbnail?id=1Kh6fbMMuggK5KDvZ-HLVoCyd2a4EHaKY"/>
+<p class="timeline-date">19/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1K5AECS9Oye3ocDkebyltM9i4U7hLaxe3/preview">
+<img alt="Ảnh xem trước Copy of IMG_2669" src="https://drive.google.com/thumbnail?id=1K5AECS9Oye3ocDkebyltM9i4U7hLaxe3"/>
+<p class="timeline-date">19/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Ir9LzuffQfbKI2Y_1jeuQXk-B5uFj-_y/preview">
+<img alt="Ảnh xem trước 2025-03-31(1)" src="https://drive.google.com/thumbnail?id=1Ir9LzuffQfbKI2Y_1jeuQXk-B5uFj-_y"/>
+<p class="timeline-date">20/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1JVeXb3QxVnR1AFovjEV89dXrcyJ_RwxZ/preview">
+<img alt="Ảnh xem trước 2025-03-31" src="https://drive.google.com/thumbnail?id=1JVeXb3QxVnR1AFovjEV89dXrcyJ_RwxZ"/>
+<p class="timeline-date">20/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Knw3uHL4oDKxKhx0bUsvo0sdC2zWcBwv/preview">
+<img alt="Ảnh xem trước IMG_2934" src="https://drive.google.com/thumbnail?id=1Knw3uHL4oDKxKhx0bUsvo0sdC2zWcBwv"/>
+<p class="timeline-date">26/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1KVf5VkNdH3Ro6j4ya31fa6OvJDN2WonV/preview">
+<img alt="Ảnh xem trước IMG_2944" src="https://drive.google.com/thumbnail?id=1KVf5VkNdH3Ro6j4ya31fa6OvJDN2WonV"/>
+<p class="timeline-date">26/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1KNV8zZjorWqK72NZjYQqhfS-o_TJ75zs/preview">
+<img alt="Ảnh xem trước IMG_2944" src="https://drive.google.com/thumbnail?id=1KNV8zZjorWqK72NZjYQqhfS-o_TJ75zs"/>
+<p class="timeline-date">26/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1KgSjzxcl-Z-RsEjdV9HXoZhLKqwkfPUn/preview">
+<img alt="Ảnh xem trước IMG_2934" src="https://drive.google.com/thumbnail?id=1KgSjzxcl-Z-RsEjdV9HXoZhLKqwkfPUn"/>
+<p class="timeline-date">26/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1NzXflhstsoWerCLBQzzt8674eWGtknKf/preview">
+<img alt="Ảnh xem trước 2025-03-31(2)" src="https://drive.google.com/thumbnail?id=1NzXflhstsoWerCLBQzzt8674eWGtknKf"/>
+<p class="timeline-date">20/10/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1L_Yie3sPwKePzWgKZm50rxd12syVVnlv/preview">
+<img alt="Ảnh xem trước IMG_3480" src="https://drive.google.com/thumbnail?id=1L_Yie3sPwKePzWgKZm50rxd12syVVnlv"/>
+<p class="timeline-date">09/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1KkYquboMxIiF-3UUKarbfKQS7QtSDPdj/preview">
+<img alt="Ảnh xem trước IMG_3475" src="https://drive.google.com/thumbnail?id=1KkYquboMxIiF-3UUKarbfKQS7QtSDPdj"/>
+<p class="timeline-date">09/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1KjbvPXJmkw6ZSnbWMNFWs9lVXRtHa_Ai/preview">
+<img alt="Ảnh xem trước Copy of copy_E28BE2F6-71EE-421D-AEC5-9A1079D5FF" src="https://drive.google.com/thumbnail?id=1KjbvPXJmkw6ZSnbWMNFWs9lVXRtHa_Ai"/>
+<p class="timeline-date">10/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1LWOZXYOM4A-cPWTjjSePJaYWkgoA70i-/preview">
+<img alt="Ảnh xem trước Copy of 1ICHFHJMJ_9E0M02" src="https://drive.google.com/thumbnail?id=1LWOZXYOM4A-cPWTjjSePJaYWkgoA70i-"/>
+<p class="timeline-date">12/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1KoHakhiQC18CZLrzciwVvsW98o1WgDMS/preview">
+<img alt="Ảnh xem trước 1ICHFHIVN_9E0M02" src="https://drive.google.com/thumbnail?id=1KoHakhiQC18CZLrzciwVvsW98o1WgDMS"/>
+<p class="timeline-date">13/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1KvK8f9Z-sbGr2EqMX64mKP5ho8OZalA_/preview">
+<img alt="Ảnh xem trước Copy of 1ICHFHJF1_9E0M02" src="https://drive.google.com/thumbnail?id=1KvK8f9Z-sbGr2EqMX64mKP5ho8OZalA_"/>
+<p class="timeline-date">13/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1KmQ2pT9fbxTfcZn9aQlESHyASxrnwkMN/preview">
+<img alt="Ảnh xem trước Copy of IMG_3620" src="https://drive.google.com/thumbnail?id=1KmQ2pT9fbxTfcZn9aQlESHyASxrnwkMN"/>
+<p class="timeline-date">13/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1KvtDSwxiP1wGkrSfa_Q4C8JQU6hKsSTu/preview">
+<img alt="Ảnh xem trước Copy of IMG_3618" src="https://drive.google.com/thumbnail?id=1KvtDSwxiP1wGkrSfa_Q4C8JQU6hKsSTu"/>
+<p class="timeline-date">13/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1MRlEBh3Z67pucEA5FQOavh5l2WNgBf61/preview">
+<img alt="Ảnh xem trước IMG_3997" src="https://drive.google.com/thumbnail?id=1MRlEBh3Z67pucEA5FQOavh5l2WNgBf61"/>
+<p class="timeline-date">20/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/12uZtLpKZSbq8ZquYVr3tTTwJNy9MEUAy/preview">
+<img alt="Ảnh xem trước IMG_2615" src="https://drive.google.com/thumbnail?id=12uZtLpKZSbq8ZquYVr3tTTwJNy9MEUAy"/>
+<p class="timeline-date">20/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1LQEfIJDvAGYwPvH7Ll_8HTeGuV4Zfu6X/preview">
+<img alt="Ảnh xem trước IMG_4036" src="https://drive.google.com/thumbnail?id=1LQEfIJDvAGYwPvH7Ll_8HTeGuV4Zfu6X"/>
+<p class="timeline-date">20/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1MbECpYPlsUueb0_dSaYjXC2sqYzvTEad/preview">
+<img alt="Ảnh xem trước IMG_4127" src="https://drive.google.com/thumbnail?id=1MbECpYPlsUueb0_dSaYjXC2sqYzvTEad"/>
+<p class="timeline-date">20/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1LB7o-OEI2ivbu4RQLlaFOIddwH2PpIg_/preview">
+<img alt="Ảnh xem trước IMG_4090" src="https://drive.google.com/thumbnail?id=1LB7o-OEI2ivbu4RQLlaFOIddwH2PpIg_"/>
+<p class="timeline-date">20/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Mj7twHEyvSjBBr8q_Zran9g4kC5kVaP_/preview">
+<img alt="Ảnh xem trước IMG_3950" src="https://drive.google.com/thumbnail?id=1Mj7twHEyvSjBBr8q_Zran9g4kC5kVaP_"/>
+<p class="timeline-date">20/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1L2hN5TObrB-cSQ01Qpks25PTmM3XZl4p/preview">
+<img alt="Ảnh xem trước IMG_4351" src="https://drive.google.com/thumbnail?id=1L2hN5TObrB-cSQ01Qpks25PTmM3XZl4p"/>
+<p class="timeline-date">27/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1MHN8L9nv7OxJasGgx-4q2GgQR1WV1qf9/preview">
+<img alt="Ảnh xem trước IMG_1923" src="https://drive.google.com/thumbnail?id=1MHN8L9nv7OxJasGgx-4q2GgQR1WV1qf9"/>
+<p class="timeline-date">27/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1MGDAoEtfqO9roV1aLs0cbFTztqrMajzG/preview">
+<img alt="Ảnh xem trước IMG_1938" src="https://drive.google.com/thumbnail?id=1MGDAoEtfqO9roV1aLs0cbFTztqrMajzG"/>
+<p class="timeline-date">27/11/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1M76_Q6dqjxKiK56Gtp2tegIPu2ZTPsN_/preview">
+<img alt="Ảnh xem trước IMG_5006" src="https://drive.google.com/thumbnail?id=1M76_Q6dqjxKiK56Gtp2tegIPu2ZTPsN_"/>
+<p class="timeline-date">14/12/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1LvxKu4jpoHAL-COqjVqyJvX1RsaC3n9-/preview">
+<img alt="Ảnh xem trước IMG_5088" src="https://drive.google.com/thumbnail?id=1LvxKu4jpoHAL-COqjVqyJvX1RsaC3n9-"/>
+<p class="timeline-date">17/12/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1LnfDW1w3nxHHdSnw-cSBYQSvUhNI5aAc/preview">
+<img alt="Ảnh xem trước IMG_5078" src="https://drive.google.com/thumbnail?id=1LnfDW1w3nxHHdSnw-cSBYQSvUhNI5aAc"/>
+<p class="timeline-date">17/12/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1L6yeHAD6HXOQn4Y5m2I134Zh9sSfWogw/preview">
+<img alt="Ảnh xem trước IMG_5088" src="https://drive.google.com/thumbnail?id=1L6yeHAD6HXOQn4Y5m2I134Zh9sSfWogw"/>
+<p class="timeline-date">17/12/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1z-jf0q1txmKU1-EAET2wc2htIgsFn2mR/preview">
+<img alt="Ảnh xem trước IMG_5291" src="https://drive.google.com/thumbnail?id=1z-jf0q1txmKU1-EAET2wc2htIgsFn2mR"/>
+<p class="timeline-date">21/12/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1wZ50q7NJlxv2pDYYikAzMVrgCa28vGys/preview">
+<img alt="Ảnh xem trước IMG_5290" src="https://drive.google.com/thumbnail?id=1wZ50q7NJlxv2pDYYikAzMVrgCa28vGys"/>
+<p class="timeline-date">21/12/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1xYwYyMc_lUrzKyMEaeWS4VUoe0UA3KT9/preview">
+<img alt="Ảnh xem trước IMG_5572" src="https://drive.google.com/thumbnail?id=1xYwYyMc_lUrzKyMEaeWS4VUoe0UA3KT9"/>
+<p class="timeline-date">28/12/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1jS0la6wpwGa5Thu99COGPYsHOUPsC85k/preview">
+<img alt="Ảnh xem trước VID_20241228_153158" src="https://drive.google.com/thumbnail?id=1jS0la6wpwGa5Thu99COGPYsHOUPsC85k"/>
+<p class="timeline-date">28/12/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1IAEjAtZ9UsoAF1LLvRpUtl9rs5-fDWUU/preview">
+<img alt="Ảnh xem trước copy_7D511018-AD35-42B2-A442-AAF321074518" src="https://drive.google.com/thumbnail?id=1IAEjAtZ9UsoAF1LLvRpUtl9rs5-fDWUU"/>
+<p class="timeline-date">28/12/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1zSeUaRgghmwCmEPyBjEWYukvXXIuvfh1/preview">
+<img alt="Ảnh xem trước IMG_5571" src="https://drive.google.com/thumbnail?id=1zSeUaRgghmwCmEPyBjEWYukvXXIuvfh1"/>
+<p class="timeline-date">28/12/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1MlbgZQn9b1CJ8R8YSawrvGq7yDHVEjkI/preview">
+<img alt="Ảnh xem trước IMG_5572(1)" src="https://drive.google.com/thumbnail?id=1MlbgZQn9b1CJ8R8YSawrvGq7yDHVEjkI"/>
+<p class="timeline-date">28/12/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1wlP4eCDFNAe4Pneh39az1ny39Ewz-HLa/preview">
+<img alt="Ảnh xem trước IMG_5572(2)" src="https://drive.google.com/thumbnail?id=1wlP4eCDFNAe4Pneh39az1ny39Ewz-HLa"/>
+<p class="timeline-date">28/12/2024</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1FlurrYFpCVmTq6XGnX2WWrOlku5vnH18/preview">
+<img alt="Ảnh xem trước VID_20250108_172122" src="https://drive.google.com/thumbnail?id=1FlurrYFpCVmTq6XGnX2WWrOlku5vnH18"/>
+<p class="timeline-date">08/01/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1OYQZR_60mVCGAsyPX_j3_OTJs0CMOf3L/preview">
+<img alt="Ảnh xem trước IMG_5984" src="https://drive.google.com/thumbnail?id=1OYQZR_60mVCGAsyPX_j3_OTJs0CMOf3L"/>
+<p class="timeline-date">08/01/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/15u3sBK4XWBSEW__QZPcbyyodIlqpcU2c/preview">
+<img alt="Ảnh xem trước IMG_5993" src="https://drive.google.com/thumbnail?id=15u3sBK4XWBSEW__QZPcbyyodIlqpcU2c"/>
+<p class="timeline-date">08/01/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1N2kEoTXqSKCd8Sk49_TP9SW98R03XbFa/preview">
+<img alt="Ảnh xem trước IMG_5992" src="https://drive.google.com/thumbnail?id=1N2kEoTXqSKCd8Sk49_TP9SW98R03XbFa"/>
+<p class="timeline-date">08/01/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/14MWYOcDaN_FwimCLfvUAxoOZGIccsE1e/preview">
+<img alt="Ảnh xem trước VID_20250108_172458" src="https://drive.google.com/thumbnail?id=14MWYOcDaN_FwimCLfvUAxoOZGIccsE1e"/>
+<p class="timeline-date">08/01/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Mi06DmKutZGS6P_2AkArShRKeaKqXrYk/preview">
+<img alt="Ảnh xem trước IMG_5991" src="https://drive.google.com/thumbnail?id=1Mi06DmKutZGS6P_2AkArShRKeaKqXrYk"/>
+<p class="timeline-date">08/01/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1ONlR1OLf6BY3MdnZQh1aUZU0nAahpRbi/preview">
+<img alt="Ảnh xem trước IMG_6027" src="https://drive.google.com/thumbnail?id=1ONlR1OLf6BY3MdnZQh1aUZU0nAahpRbi"/>
+<p class="timeline-date">10/01/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1McB2vBGZXcR0wcM8djtZdXFu45wsntEa/preview">
+<img alt="Ảnh xem trước 1IJPDPN4E_AKRJUJ" src="https://drive.google.com/thumbnail?id=1McB2vBGZXcR0wcM8djtZdXFu45wsntEa"/>
+<p class="timeline-date">11/02/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1N3X-Sh5Xn8vLxnnBi2wHur_sB0NmEi4W/preview">
+<img alt="Ảnh xem trước copy_430BEBD8-B186-415C-B2EB-93ED17EB2459" src="https://drive.google.com/thumbnail?id=1N3X-Sh5Xn8vLxnnBi2wHur_sB0NmEi4W"/>
+<p class="timeline-date">25/02/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1NJZNKx_HlUn2EwiN8C0HHbaYKBinTo2N/preview">
+<img alt="Ảnh xem trước 1IKUMCLN2_B2A062" src="https://drive.google.com/thumbnail?id=1NJZNKx_HlUn2EwiN8C0HHbaYKBinTo2N"/>
+<p class="timeline-date">25/02/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1a41Z0x_agQWEQCYkwsmXrdd0--xH2ZKw/preview">
+<img alt="Ảnh xem trước 1IKUMCLN9_B2A062" src="https://drive.google.com/thumbnail?id=1a41Z0x_agQWEQCYkwsmXrdd0--xH2ZKw"/>
+<p class="timeline-date">25/02/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1ssxjwzgpW1_u08MXjVUpelyRjil6p08A/preview">
+<img alt="Ảnh xem trước IMG_7484" src="https://drive.google.com/thumbnail?id=1ssxjwzgpW1_u08MXjVUpelyRjil6p08A"/>
+<p class="timeline-date">25/02/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1E_MNTaHBw6S2q_jokmpDwKH1a57pwNYt/preview">
+<img alt="Ảnh xem trước IMG_7488" src="https://drive.google.com/thumbnail?id=1E_MNTaHBw6S2q_jokmpDwKH1a57pwNYt"/>
+<p class="timeline-date">25/02/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1G3opHh6YAx3btpN8Y7a7hDHgoIL4RSsH/preview">
+<img alt="Ảnh xem trước IMG_7491" src="https://drive.google.com/thumbnail?id=1G3opHh6YAx3btpN8Y7a7hDHgoIL4RSsH"/>
+<p class="timeline-date">25/02/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Mkg7INiHOp8D1gcd5jDv4VAqdQct8OhR/preview">
+<img alt="Ảnh xem trước IMG_7489" src="https://drive.google.com/thumbnail?id=1Mkg7INiHOp8D1gcd5jDv4VAqdQct8OhR"/>
+<p class="timeline-date">25/02/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1FolKSoY6coOMoN_YD1BA5Vf8bTeWJW5K/preview">
+<img alt="Ảnh xem trước IMG_7559" src="https://drive.google.com/thumbnail?id=1FolKSoY6coOMoN_YD1BA5Vf8bTeWJW5K"/>
+<p class="timeline-date">27/02/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1NRPO9qtojU0y0JnUQKHMK4SSNCyShiXw/preview">
+<img alt="Ảnh xem trước copy_39BB4B12-D210-4A7D-9B37-279818DDC7E1" src="https://drive.google.com/thumbnail?id=1NRPO9qtojU0y0JnUQKHMK4SSNCyShiXw"/>
+<p class="timeline-date">05/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Y8QoKl3xf3xXEuj7aXBX6WvBI2STde59/preview">
+<img alt="Ảnh xem trước IMG_8002" src="https://drive.google.com/thumbnail?id=1Y8QoKl3xf3xXEuj7aXBX6WvBI2STde59"/>
+<p class="timeline-date">07/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1MoDK7upDVKbNSSufZEhELtyQzU-YdnsO/preview">
+<img alt="Ảnh xem trước IMG_8742" src="https://drive.google.com/thumbnail?id=1MoDK7upDVKbNSSufZEhELtyQzU-YdnsO"/>
+<p class="timeline-date">07/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/19-4CcRBTHHFFsX2cudXSLZYVd9WsRsvw/preview">
+<img alt="Ảnh xem trước IMG_7994" src="https://drive.google.com/thumbnail?id=19-4CcRBTHHFFsX2cudXSLZYVd9WsRsvw"/>
+<p class="timeline-date">07/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1dBiWIVkqZHSvMONQpoonOWtWGYz9ZUIt/preview">
+<img alt="Ảnh xem trước IMG_8006" src="https://drive.google.com/thumbnail?id=1dBiWIVkqZHSvMONQpoonOWtWGYz9ZUIt"/>
+<p class="timeline-date">07/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Yv0-9cQbDhcfV8Vjanv0G-1OFHJNsiWz/preview">
+<img alt="Ảnh xem trước IMG_8741" src="https://drive.google.com/thumbnail?id=1Yv0-9cQbDhcfV8Vjanv0G-1OFHJNsiWz"/>
+<p class="timeline-date">07/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1OSZ4sgNHhUeKzt4y2RwRRGB3j5HvLSEr/preview">
+<img alt="Ảnh xem trước IMG_8039" src="https://drive.google.com/thumbnail?id=1OSZ4sgNHhUeKzt4y2RwRRGB3j5HvLSEr"/>
+<p class="timeline-date">08/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Z-NBt9UyHe-keJNIzOrRX4rCdm85Qo1F/preview">
+<img alt="Ảnh xem trước ScreenRecording_03-08-2025 21-45-15_1" src="https://drive.google.com/thumbnail?id=1Z-NBt9UyHe-keJNIzOrRX4rCdm85Qo1F"/>
+<p class="timeline-date">08/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Xz-Tuj9RgCELbinY_VhOCiLRhpoxw3nO/preview">
+<img alt="Ảnh xem trước IMG_8746" src="https://drive.google.com/thumbnail?id=1Xz-Tuj9RgCELbinY_VhOCiLRhpoxw3nO"/>
+<p class="timeline-date">08/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/18MGMJfSN7Tdd60EHCDcrQtoBi0PGDr9y/preview">
+<img alt="Ảnh xem trước IMG_8749" src="https://drive.google.com/thumbnail?id=18MGMJfSN7Tdd60EHCDcrQtoBi0PGDr9y"/>
+<p class="timeline-date">08/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1rOYXFNs9gwDIPLOYJ6YFUBKgP1jGI8H0/preview">
+<img alt="Ảnh xem trước IMG_8041" src="https://drive.google.com/thumbnail?id=1rOYXFNs9gwDIPLOYJ6YFUBKgP1jGI8H0"/>
+<p class="timeline-date">08/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1NojUUgmcIKRN0IRvV1Naq2KLqwbk6Pq1/preview">
+<img alt="Ảnh xem trước ky-yeu-dep-nghe-an-12dk60-truong-thpt-thai-hoa-" src="https://drive.google.com/thumbnail?id=1NojUUgmcIKRN0IRvV1Naq2KLqwbk6Pq1"/>
+<p class="timeline-date">09/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Ds7ae9kiA6JckEoTZuRgL96hQVudMkeP/preview">
+<img alt="Ảnh xem trước IMG_8085" src="https://drive.google.com/thumbnail?id=1Ds7ae9kiA6JckEoTZuRgL96hQVudMkeP"/>
+<p class="timeline-date">09/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1Uj4lOcndZDOciNFrVluj_q6VTyE_3Ewa/preview">
+<img alt="Ảnh xem trước IMG_8750" src="https://drive.google.com/thumbnail?id=1Uj4lOcndZDOciNFrVluj_q6VTyE_3Ewa"/>
+<p class="timeline-date">09/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1jwxWAPeC2QwwL4HNHsXR-Op8wbsSrzrg/preview">
+<img alt="Ảnh xem trước IMG_8137" src="https://drive.google.com/thumbnail?id=1jwxWAPeC2QwwL4HNHsXR-Op8wbsSrzrg"/>
+<p class="timeline-date">09/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1WdyKCq5jxIUMzDmCTcTm-6_RL-BQgAPo/preview">
+<img alt="Ảnh xem trước IMG_8092" src="https://drive.google.com/thumbnail?id=1WdyKCq5jxIUMzDmCTcTm-6_RL-BQgAPo"/>
+<p class="timeline-date">09/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1RWaAgeiyrP1Mcta8_wTX5EDm1Ai_fiWa/preview">
+<img alt="Ảnh xem trước IMG_8082" src="https://drive.google.com/thumbnail?id=1RWaAgeiyrP1Mcta8_wTX5EDm1Ai_fiWa"/>
+<p class="timeline-date">09/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1W3NA9XXF0odPnuNO_vTBUNm4WGPlsw03/preview">
+<img alt="Ảnh xem trước 1ILS68G21_AKRJUJ" src="https://drive.google.com/thumbnail?id=1W3NA9XXF0odPnuNO_vTBUNm4WGPlsw03"/>
+<p class="timeline-date">09/03/2025</p>
+</div>
+<div class="timeline-item" data-video-url="https://drive.google.com/file/d/1HJ7OpZ9tKbbEdVL6zDUV_y88S7aN1YkR/preview">
+<img alt="Ảnh xem trước Copy of A1AA4BA9-32FB-4E37-BA70-F4407E5427F6seg" src="https://drive.google.com/thumbnail?id=1HJ7OpZ9tKbbEdVL6zDUV_y88S7aN1YkR"/>
+<p class="timeline-date">29/05/2025</p>
+</div>
+</div>
+</div>
+<div class="entry">
+<h2>🇻🇳 Tự Hào Một Dải Non Sông</h2>
+<p>Trải qua 1000 năm đấu tranh, thế hệ học sinh hôm nay tự hào, biết ơn về "Một dải non sông" mang tên Việt Nam đầy hào hùng.</p>
+<div class="fb-post" data-href="https://www.facebook.com/permalink.php?story_fbid=pfbid05oVEc6A43TzSqeGeXfdeWGiLE3xgxvEMLi4hrGniK7mbBCUn3QqGk7SwefWbB5Mrl&amp;id=100084424947640" data-show-text="true" data-width="500"></div>
+</div>
+<div class="entry">
+<h2>🍎 Tri Ân Ngày Nhà Giáo 20/11</h2>
+<p>“Trong bức tranh tuổi học trò, thầy cô là những nét vẽ đẹp nhất.” Chúc thầy cô ngày 20/11 thật nhiều niềm vui và ấm áp!</p>
+<div class="fb-post" data-href="https://www.facebook.com/permalink.php?story_fbid=pfbid02qPGGy3zWVY81shZP3uhLhWkm1pKz3dk71z1hZpgBFNxdF8s4R5wYvUyUQ56kqn8ql&amp;id=100084424947640" data-show-text="true" data-width="500"></div>
+</div>
+<div class="entry">
+<h2>👦 Happy Men's Day 19/11</h2>
+<p>Chúc các boy’s DK60 một ngày 19/11 thật tuyệt vời 🫶🏼</p>
+<div style="margin-top: 15px;">
+<iframe allow="autoplay; fullscreen" allowfullscreen="true" height="360" loading="lazy" src="https://drive.google.com/file/d/1bZNyxuRIfP8hSsLUTYiHk-DFk3b6zE5X/preview" style="border-radius: 12px; border: none;" width="100%"></iframe>
+<p style="text-align: center; font-style: italic;">👦 Video chúc mừng Men's Day</p>
+</div>
+</div>
+<div class="entry">
+<h2>🎤 Buổi Học Dân Ca Nghệ Tĩnh</h2>
+<p>Buổi học GDĐP với chủ đề dân ca xứ Nghệ đầy màu sắc và ý nghĩa! Cùng xem lại những khoảnh khắc đáng nhớ nhé!</p>
+<div class="fb-post" data-href="https://www.facebook.com/permalink.php?story_fbid=pfbid025HZdga6k5REmiPNcV7FYWUfitB5H5A8UaeX16MzMcvnFPJHcueeVoGx48pEDWykSl&amp;id=100084424947640" data-show-text="true" data-width="500"></div>
+</div>
+<div class="entry">
+<h2>📱 Tiktok Moment DK60</h2>
+<p>Những phút giây đáng nhớ trên Tiktok 💖</p>
+<div style="position: relative; margin-bottom: 20px;">
+<iframe allow="autoplay; fullscreen" allowfullscreen="true" height="360" loading="lazy" src="https://drive.google.com/file/d/1bZNyxuRIfP8hSsLUTYiHk-DFk3b6zE5X/preview" style="border-radius: 12px; border: none;" width="100%"></iframe>
+<p style="text-align: center; font-style: italic; margin-top: 8px;">📹 Men's Day – DK60</p>
+</div>
+<div style="position: relative; margin-bottom: 20px;">
+<iframe allow="autoplay; fullscreen" allowfullscreen="true" height="360" loading="lazy" src="https://drive.google.com/file/d/107_2x6PDC43FlamL-dbZAG-uB1ifwAht/preview" style="border-radius: 12px; border: none;" width="100%"></iframe>
+<p style="text-align: center; font-style: italic; margin-top: 8px;">📹 Men's Day – DK60</p>
+</div>
+<div style="position: relative; margin-bottom: 20px;">
+<iframe allow="autoplay; fullscreen" allowfullscreen="true" height="360" loading="lazy" src="https://drive.google.com/file/d/1_wpg_rkdhYQYHRRxEdObOeRsNGGNBln9/preview" style="border-radius: 12px; border: none;" width="100%"></iframe>
+<p style="text-align: center; font-style: italic; margin-top: 8px;">📹 Liberation Day – DK60</p>
+</div>
+<div style="position: relative; margin-bottom: 20px;">
+<iframe allow="autoplay; fullscreen" allowfullscreen="true" height="360" loading="lazy" src="https://drive.google.com/file/d/1LcLRBJUxnnM3Dd-Qz1SrAmMDFPX3-nkT/preview" style="border-radius: 12px; border: none;" width="100%"></iframe>
+<p style="text-align: center; font-style: italic; margin-top: 8px;">📹 Yearbook  – DK60</p>
+</div>
+<div style="position: relative; margin-bottom: 20px;">
+<iframe allow="autoplay; fullscreen" allowfullscreen="true" height="360" loading="lazy" src="https://drive.google.com/file/d/1Bd0SczsGLmJvfEeV5R8ZJqVKdfN1OtlM/preview" style="border-radius: 12px; border: none;" width="100%"></iframe>
+<p style="text-align: center; font-style: italic; margin-top: 8px;">📹 Đú trend  – DK60</p>
+</div>
+<div style="position: relative; margin-bottom: 20px;">
+<iframe allow="autoplay; fullscreen" allowfullscreen="true" height="360" loading="lazy" src="https://drive.google.com/file/d/1Aytp-uKXVgSAQgwGOPmhFsIgHfTdYZsZ/preview" style="border-radius: 12px; border: none;" width="100%"></iframe>
+<p style="text-align: center; font-style: italic; margin-top: 8px;">📹 Đú trend – DK60</p>
+</div>
+<div style="position: relative; margin-bottom: 20px;">
+<iframe allow="autoplay; fullscreen" allowfullscreen="true" height="360" loading="lazy" src="https://drive.google.com/file/d/1eXWwGga657_AdMWtvcW_9HVF6eIqCly-/preview" style="border-radius: 12px; border: none;" width="100%"></iframe>
+<p style="text-align: center; font-style: italic; margin-top: 8px;">📹 Celebration Day – DK60</p>
+</div>
+<div style="position: relative; margin-bottom: 20px;">
+<iframe allow="autoplay; fullscreen" allowfullscreen="true" height="360" loading="lazy" src="https://drive.google.com/file/d/1YlAnjQ2YVSBxP9Zh7Yt58JcVJyfD81L0/preview" style="border-radius: 12px; border: none;" width="100%"></iframe>
+<p style="text-align: center; font-style: italic; margin-top: 8px;">📹 Birthday anniversary of the Teacher – DK60</p>
+</div>
+<div style="position: relative; margin-bottom: 20px;">
+<iframe allow="autoplay; fullscreen" allowfullscreen="true" height="360" loading="lazy" src="https://drive.google.com/file/d/1oi4mP-selw9RPNfq7vVaynmOsSsgsA_J/preview" style="border-radius: 12px; border: none;" width="100%"></iframe>
+<p style="text-align: center; font-style: italic; margin-top: 8px;">📹 Woman's Day – DK60</p>
+</div>
+<div style="position: relative; margin-bottom: 20px;">
+<iframe allow="autoplay; fullscreen" allowfullscreen="true" height="360" loading="lazy" src="https://drive.google.com/file/d/1ka-oGsz4C6qT-gfo-lWTUMx8jkJYejvZ/preview" style="border-radius: 12px; border: none;" width="100%"></iframe>
+<p style="text-align: center; font-style: italic; margin-top: 8px;">📹 Đú trend – DK60</p>
+</div>
+<div style="position: relative; margin-bottom: 20px;">
+<iframe allow="autoplay; fullscreen" allowfullscreen="true" height="360" loading="lazy" src="https://drive.google.com/file/d/1kCKi2bPMRJHBZd3mABFlri2M-KnSdXLZ/preview" style="border-radius: 12px; border: none;" width="100%"></iframe>
+<p style="text-align: center; font-style: italic; margin-top: 8px;">📹 Congress Day – DK60</p>
+</div>
+<div style="position: relative; margin-bottom: 20px;">
+<iframe allow="autoplay; fullscreen" allowfullscreen="true" height="360" loading="lazy" src="https://drive.google.com/file/d/1yF6x7r_IqkNm2EdB71N3nvXrYBcuRxQL/preview" style="border-radius: 12px; border: none;" width="100%"></iframe>
+<p style="text-align: center; font-style: italic; margin-top: 8px;">📹 1 day of school of DK60 – DK60</p>
+</div>
+</div>
+<footer>
+<p>© Made with ❤️ by Luonghiii &amp; DK60 Collective</p>
+</footer>
+<div class="modal-overlay" id="videoModal">
+<div class="modal-content">
+<button class="modal-close-btn" id="closeModalBtn">×</button> <iframe allow="autoplay; fullscreen" allowfullscreen="true" height="400" id="modalVideoFrame" src="" style="border-radius: 8px; border: none;" width="100%"></iframe>
+</div>
+</div>
+<script>
+        // Hiệu ứng cuộn ảnh nền theo chuột
+        document.addEventListener("mousemove", function(e) {
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            document.body.style.backgroundPosition = `${50 - x}% ${50 - y}%`;
+        });
+    </script>
+<button id="scrollTopBtn" title="Lên đầu trang">🔝</button>
+<style>
+        #scrollTopBtn {
+            position: fixed;
+            bottom: 30px;
+            z-index: 9999;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            padding: 10px 14px;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            display: none;
+            right: 20px;
+        }
+        #scrollTopBtn:hover {
+            background-color: #ddd;
+        }
+    </style>
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const scrollTopBtn = document.getElementById("scrollTopBtn");
+
+            // Nút cuộn lên đầu
+            window.addEventListener("scroll", () => {
+                scrollTopBtn.style.display = window.scrollY > 400 ? "block" : "none";
+            });
+
+            scrollTopBtn.addEventListener("click", () => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+        });
+    </script>
+<script>
+        // Hiệu ứng thay đổi favicon động
+        const favicons = [
+            'images/logo/logo1.png',
+            'images/logo/logo2.png',
+            'images/logo/logo3.png',
+            'images/logo/logo4.png',
+            'images/logo/logo5.png'
+        ];
+        let current = 0;
+        setInterval(() => {
+            const favicon = document.getElementById('dynamic-favicon');
+            favicon.setAttribute('href', favicons[current]);
+            current = (current + 1) % favicons.length;
+        }, 1000);
+    </script>
+<script async="True" crossorigin="anonymous" defer="True" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&amp;version=v18.0"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("timelineSearch");
+    const timelineItems = document.querySelectorAll(".timeline-item");
+
+    searchInput.addEventListener("input", function () {
+        const searchTerm = searchInput.value.toLowerCase();
+        timelineItems.forEach(item => {
+            const date = item.querySelector('.timeline-date').textContent.toLowerCase();
+            if (date.includes(searchTerm)) {
+                item.style.display = 'inline-block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+});
+</script><script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.body.classList.add("fade-in");
+});
+</script><script>
+document.addEventListener("DOMContentLoaded", function () {
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    const modalOverlay = document.createElement('div');
+    modalOverlay.classList.add('modal-overlay');
+    modalOverlay.innerHTML = `
+      <div class="modal-content">
+        <button class="modal-close-btn">&times;</button>
+        <iframe src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      </div>`;
+    document.body.appendChild(modalOverlay);
+
+    timelineItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const url = item.dataset.videoUrl;
+        const iframe = modalOverlay.querySelector('iframe');
+        iframe.src = url;
+        modalOverlay.classList.add('visible');
+      });
+    });
+
+    modalOverlay.querySelector('.modal-close-btn').addEventListener('click', () => {
+      modalOverlay.classList.remove('visible');
+      modalOverlay.querySelector('iframe').src = "";
+    });
+});
+</script></body>
+</html>

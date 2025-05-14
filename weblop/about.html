@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Giới Thiệu - Kỷ yếu DK60</title>
+    <link href="images/logo/logo1.png" id="dynamic-favicon" rel="icon" type="image/png"/>
+    <style>
+        /* === Styles chung === */
+        :root {
+            --bg-transparent-light: rgba(255, 255, 255, 0.7);
+            --bg-transparent-darker: rgba(255, 255, 255, 0.85);
+            --text-color: #333;
+            --link-color: #1a73e8;
+            --border-color-light: rgba(0,0,0,0.1);
+            --border-color-dark: rgba(0,0,0,0.7);
+            --shadow-light: 0 4px 10px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 20px rgba(0,0,0,0.2);
+            --shadow-dark: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            background-image: url('images/bg.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            /* Giữ lại opacity và transition cho hiệu ứng */
+            transition: background-position 0.1s ease, opacity 0.6s ease-in-out;
+            opacity: 0; /* Bắt đầu ẩn */
+        }
+
+        body.fade-in {
+            opacity: 1; /* Hiện rõ khi có class fade-in */
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Header, Nav, Footer - Giữ nguyên như cũ */
+        header {
+            background-color: var(--bg-transparent-light);
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        nav {
+            background-color: var(--bg-transparent-light);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        nav ul li a:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            background-color: var(--bg-transparent-light);
+            color: #333;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        /* --- Phần nội dung chính --- */
+        .container {
+            max-width: 80%; /* Giới hạn chiều rộng container */
+            margin: 30px auto; /* Căn giữa và tạo khoảng cách */
+            overflow: hidden; /* Clear float nếu có */
+        }
+
+        .content {
+            background-color: var(--bg-transparent-darker); /* Sử dụng biến màu */
+            padding: 30px;
+            box-shadow: var(--shadow-medium); /* Sử dụng biến bóng đổ */
+            border-radius: 8px;
+            margin-bottom: 20px; /* Add margin bottom to content blocks */
+        }
+
+         .content:last-child {
+            margin-bottom: 0; /* Remove margin bottom for the last content block */
+         }
+
+
+        /* Nếu muốn h2 trong content khác thì giữ lại */
+        .content h2 {
+            text-align: center;
+            color: var(--text-color); /* Màu chữ thường cho h2 trong content */
+            text-shadow: none; /* Bỏ bóng đổ cho h2 trong content */
+            margin-top: 0; /* Bỏ margin top nếu không cần */
+            margin-bottom: 25px; /* Thêm khoảng cách dưới h2 */
+			text-shadow: 1px 1px 3px rgba(0,0,0,0.7); /* Add shadow for readability */
+        }
+
+        /* Style cho phần danh sách thành viên */
+        .member-list p {
+            margin-bottom: 15px; /* Khoảng cách giữa các thành viên */
+            line-height: 1.6;
+        }
+         .member-list p:last-child {
+            margin-bottom: 0; /* Remove margin bottom for the last member */
+         }
+
+        .member-list strong {
+            color: #5a1e9c; /* Màu nổi bật cho tên */
+        }
+
+
+        /* Responsive Styles - Giữ nguyên như cũ */
+        @media (max-width: 768px) {
+             body { padding: 15px; }
+             header, nav, footer { padding: 10px; margin-bottom: 15px; }
+             nav ul { gap: 15px; flex-wrap: wrap; justify-content: center; }
+             .container { max-width: 95%; } /* Tăng chiều rộng container trên tablet */
+             .content { padding: 20px; }
+             /* Cần xem lại các style responsive khác nếu cần */
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            nav ul { flex-wrap: nowrap !important; justify-content: space-around !important; gap: 5px !important; }
+            nav ul li a { font-size: 13px !important; padding: 4px 6px !important; }
+            header h1 { font-size: 1.2rem; } /* Điều chỉnh lại cỡ chữ header */
+            .content h2 { font-size: 1.4rem; }
+             /* Style ảnh avatar trên mobile */
+            .content img { width: 100px; height: 100px;}
+        }
+
+    </style>
+    </head>
+<body>
+
+    <header>
+        <h1> 🎓 Ký ức về DK60 - Hành trình Thanh Xuân</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Trang Chủ</a></li>
+            <li><a href="about.html">Giới Thiệu</a></li>
+            <li><a href="contact.html">Liên Hệ</a></li>
+            <li><a href="thanh-vien-lop.html">Thành Viên</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="content">
+                <h2>📖 Giới thiệu về tớ</h2>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center;">
+                    <img alt="Avatar của Luonghii" src="images/about/avatar.png" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"/>
+                    <div>
+                        <p style="font-size: 1.1em; margin-bottom: 10px;">Mình là <strong>Luonghii</strong>. 🌸</p>
+                        <p style="line-height: 1.6;">Mỗi bức ảnh, mỗi dòng chữ trong trang web này đều là một phần ký ức quý giá.
+                            Chúng ta không chỉ học cùng nhau, mà còn trưởng thành cùng nhau – dưới mái nhà DK60 thân yêu. ❤️</p>
+                        <blockquote style="font-style: italic; color: #555; margin-top: 20px; border-left: 4px solid #ccc; padding-left: 15px;">
+                            "Chúng ta đi qua thanh xuân không phải để nhớ, mà để mỉm cười mỗi khi nghĩ về."
+                        </blockquote>
+                    </div>
+                </div>
+                <marquee behavior="scroll" direction="left" style="margin-top: 30px; color: #555; background-color: rgba(200, 200, 200, 0.1); padding: 5px; border-radius: 4px;font-weight:Bold;">
+                    Thanh xuân không bao giờ quay lại, nhưng ký ức sẽ mãi còn trong tim mỗi chúng ta. ✨
+                </marquee>
+            </div>
+
+            <div class="content" style="margin-top: 30px;">
+                 <h2>🌟 Thành viên lớp mình</h2>
+                 <div class="member-list">
+                     <p><strong>Mai Thị Ngọc Ánh:</strong> Ngọc Ánh, tuy vóc dáng có phần nhỏ bé, nhưng lại sở hữu tư duy xuất sắc trong môn Toán. Điều đặc biệt hơn nữa là bạn ấy rất vui tính, luôn mang đến tiếng cười và năng lượng tích cực cho mọi người xung quanh.</p>
+                     <p><strong>Đàm Minh Châu:</strong> Minh Châu chắc hẳn là một thành viên cực kỳ năng động và trách nhiệm của lớp. Bạn ấy không chỉ giữ vai trò Bí thư mà còn là người "đầu tàu" cho các phong trào, hoạt động của lớp, luôn hòa đồng, vui tính và được rất nhiều bạn bè yêu mến, tin tưởng.</p>
+                     <p><strong>Hoàng Thị Kim Dung:</strong> Kim Dung là một bạn có khả năng tư duy nhạy bén, thể hiện rõ qua việc bạn ấy đã bắt đầu kinh doanh từ khá sớm, ngay từ lớp 11. Bên cạnh sự thông minh, Kim Dung còn là một người rất vui tính, góp phần làm không khí lớp thêm sôi động.</p>
+                     <p><strong>Lê Thị Vân Anh:</strong> Vân Anh là một thành viên luôn mang lại sự vui vẻ cho lớp. Nét tính cách vui tính này chắc hẳn giúp bạn ấy dễ dàng kết nối và tạo bầu không khí thoải mái với mọi người.</p>
+                     <p><strong>Nguyễn Thị Trúc Anh:</strong> Trúc Anh không chỉ được biết đến với sự vui tính mà còn có những định hướng rất rõ ràng cho tương lai. Việc bạn ấy học tiếng Trung từ sớm để chuẩn bị cho việc du học thể hiện sự quyết tâm và chủ động đáng ngưỡng mộ.</p>
+                     <p><strong>Nguyễn Thị Nguyệt Ánh:</strong> Nguyệt Ánh có thể hơi trầm tính, ít nói một chút, nhưng điều đó không làm giảm đi sự quan tâm của mọi người dành cho bạn ấy. Chắc hẳn Nguyệt Ánh có một sức hút riêng khiến các bạn luôn muốn chia sẻ và ở bên cạnh.</p>
+                     <p><strong>Ngô Thị Khánh Linh:</strong> Khánh Linh, dù có vóc dáng nhỏ nhắn, nhưng lại là một người rất hoạt ngôn. Chính sự hoạt bát, hay nói này lại trở thành điểm đáng yêu, khiến mọi người xung quanh cảm thấy quý mến tính cách của bạn ấy.</p>
+                     <p><strong>Tạ Đức Dương:</strong> Tạ Đức Dương có vẻ là một chàng trai "hình mẫu" với nhiều ưu điểm: đẹp trai, học giỏi, và điều kiện gia đình tốt. Đặc biệt hơn, Cậu còn thấy bạn ấy có sự kết hợp thú vị giữa trầm tính và vui tính tùy từng hoàn cảnh, tạo nên nét cá tính riêng biệt.</p>
+                     <p><strong>Nguyễn Đức Cường:</strong> Nguyễn Đức Cường có một đặc điểm ngoại hình khá đặc biệt và có thể gây bất ngờ là dù còn trẻ tuổi nhưng do học tập nhiều, tóc bạn ấy đã xuất hiện một vài sợi trắng. Điều này cho thấy sự nỗ lực và đầu tư vào việc học của Cường.</p>
+                     <p><strong>Nguyễn Trần Thục Hân:</strong> Thục Hân, tuy có dáng người nhỏ nhắn, nhưng lại chứa đựng nguồn năng lượng vui vẻ dồi dào. Tính cách vui tính của bạn ấy chắc hẳn làm cho không khí những cuộc trò chuyện hay hoạt động nhóm trở nên rộn ràng hơn.</p>
+                     <p><strong>Ngô Thị Thùy Dương:</strong> Thùy Dương là một người rất chăm chỉ trong học tập và có tài năng đáng nể trong lĩnh vực kinh doanh. Sự kết hợp giữa cần cù và khả năng nhạy bén với kinh tế là một điểm mạnh lớn của bạn ấy.</p>
+                     <p><strong>Đặng Hồng Hạnh:</strong> Hồng Hạnh là một người bạn cực kỳ cởi mở và hòa đồng. Khả năng bắt chuyện và kết nối với *tất cả* mọi người trong lớp cho thấy bạn ấy có sự tự tin và thân thiện rất lớn.</p>
+                     <p><strong>Nguyễn Thị Thúy Hường:</strong> Thúy Hường đã có một sự thay đổi đáng ngưỡng mộ trong tính cách. Từ sự rụt rè ban đầu, bạn ấy đã trở nên rất hòa đồng với mọi người khi lên năm lớp 12, cho thấy sự trưởng thành và nỗ lực của bản thân.</p>
+                     <p><strong>Trần Văn Hữu:</strong> Trần Văn Hữu có một tài lẻ khá đặc biệt và thú vị là đá bia rất giỏi. Đây chắc hẳn là một kỹ năng ấn tượng mà không phải ai cũng có được, mang đến những giây phút giải trí cho bạn bè.</p>
+                     <p><strong>Nguyễn Thị Kim Anh:</strong> Kim Anh là một bạn có năng lực học tập rất tốt. Sự chăm chỉ và khả năng tiếp thu kiến thức giúp bạn ấy đạt được kết quả cao trong học tập.</p>
+                     <p><strong>Trần Hương Giang:</strong> Hương Giang nổi bật với thành tích học tập xuất sắc. Việc bạn ấy học rất giỏi chắc hẳn là nguồn động lực và là tấm gương cho nhiều bạn khác trong lớp noi theo.</p>
+                     <p><strong>Võ Trung Quân:</strong> Dù không có lợi thế về chiều cao, Võ Trung Quân lại được bù đắp bằng năng khiếu thể thao đáng nể. Điều này chứng tỏ bạn ấy có sự dẻo dai, kỹ năng và niềm đam mê với các hoạt động thể chất.</p>
+                     <p><strong>Hoàng Ngọc Bảo Châu:</strong> Bảo Châu có điều kiện gia đình tốt, tính cách có lúc hơi "cọc cằn" nhưng lại rất nhanh quên và đặc biệt là cực kỳ vui tính. Sự kết hợp giữa những nét tính cách đối lập này tạo nên một con người rất thật và đáng yêu.</p>
+                     <p><strong>Hồ Nhật Anh:</strong> Hồ Nhật Anh là một bạn có tính cách hay giỡn. Sự hài hước và thích trêu đùa của bạn ấy chắc chắn mang lại nhiều tiếng cười và khoảnh khắc giải trí cho lớp.</p>
+                     <p><strong>Hoàng Văn Thành Đạt:</strong> Thành Đạt là một người bạn có vốn sống và kỹ năng đa dạng. Việc bạn ấy "gì cũng biết làm" cho thấy sự tò mò, ham học hỏi và khả năng thích nghi tốt với nhiều lĩnh vực trong cuộc sống.</p>
+                     <p><strong>Trương Nguyễn Lệ Quyên:</strong> Lệ Quyên là một bạn học rất giỏi môn Văn, có khả năng cảm thụ và diễn đạt ngôn từ tốt. Bên cạnh đó, bạn ấy còn là một người vui tính, mang lại không khí thoải mái khi trò chuyện.</p>
+                     <p><strong>Ngô Đình Nguyên:</strong> Ngô Đình Nguyên được Cậu mô tả là rất chững chạc và trưởng thành. Nét tính cách này chắc hẳn giúp bạn ấy có sự điềm đạm, chín chắn trong suy nghĩ và hành động, có thể là chỗ dựa tin cậy cho bạn bè.</p>
+                     <p><strong>Đặng Trần Minh Thư:</strong> Minh Thư có năng khiếu nổi bật về tiếng Anh, học rất giỏi môn này. Kết hợp với sự vui tính, bạn ấy chắc hẳn là một người bạn dễ gần và thú vị để cùng học tập cũng như giải trí.</p>
+                     <p><strong>Trương Thị Huyền Trang:</strong> Huyền Trang được mệnh danh là "người đẹp của lớp" và không chỉ vậy, bạn ấy còn có thành tích học tập rất tốt. Sự kết hợp giữa ngoại hình sáng sủa và trí tuệ là điều đáng ngưỡng mộ ở Trang.</p>
+                     <p><strong>Đậu Thị Hoài Phương:</strong> Hoài Phương là một bạn học giỏi môn Giáo dục kinh tế, cho thấy sự quan tâm và khả năng phân tích các vấn đề xã hội, kinh tế. Cùng với nét tính cách vui tính, bạn ấy chắc hẳn là một người bạn sôi nổi trong các buổi học.</p>
+                     <p><strong>Đặng Thị Hồng Phương:</strong> Hồng Phương có xu hướng không quá hòa đồng với cả lớp, chỉ tập trung chơi với một vài người bạn thân, nhưng bù lại bạn ấy có khả năng tự học rất cao. Điều này cho thấy Phương là một người có sự tập trung và chủ động trong việc tiếp thu kiến thức.</p>
+                     <p><strong>Trần Yến Nhi:</strong> Yến Nhi là một bạn học giỏi môn Toán và có ước mơ rõ ràng về việc du học Đức, thể hiện qua việc bạn ấy đã học tiếng từ lớp 12. Sự kết hợp giữa năng lực học tập và mục tiêu phấn đấu là rất đáng khích lệ.</p>
+                     <p><strong>Trương Thị Thảo:</strong> Thảo có một sự đối lập khá thú vị trong tính cách: trầm tính ở ngoài đời nhưng lại rất khác, có phần cởi mở và sôi nổi hơn nhiều trên mạng xã hội. Điều này cho thấy Thảo có những khía cạnh khác nhau tùy vào môi trường giao tiếp.</p>
+                     <p><strong>Nguyễn Thị Mai:</strong> Nguyễn Thị Mai ban đầu là một người khá ít nói, nhưng khi lên lớp 12 đã có sự thay đổi lớn, học được cách nói chuyện và giao tiếp nhiều hơn. Sự tiến bộ này cho thấy Mai đã nỗ lực để hòa nhập và cởi mở hơn với mọi người.</p>
+                     <p><strong>Nguyễn Tố Uyên:</strong> Tố Uyên là một bạn rất hay nói xàm và cực kỳ vui tính. Sự hài hước có phần "tưng tửng" của bạn ấy chắc chắn mang lại rất nhiều tiếng cười và những khoảnh khắc giải trí cho lớp.</p>
+                     <p><strong>Nguyễn Thị Phương Trinh:</strong> Phương Trinh sở hữu những tài lẻ rất "cool" là trượt ván và vẽ rất tốt. Những kỹ năng này cho thấy sự năng động, sáng tạo và khả năng thể hiện bản thân qua nghệ thuật và thể thao của bạn ấy.</p>
+                     <p><strong>Võ Thị Tú Quyên:</strong> Tú Quyên có tính cách trầm tính nhưng lại rất xuất sắc trong môn Toán. Điều này chứng minh rằng sự im lặng không đồng nghĩa với việc thiếu năng lực, ngược lại, Tú Quyên có chiều sâu trong tư duy logic.</p>
+                     <p><strong>Đặng Thái Bảo Trâm:</strong> Bảo Trâm được mô tả là một bạn khá trầm tính. Nét tính cách này có thể khiến bạn ấy ít thể hiện bản thân ra bên ngoài nhưng chắc hẳn có thế giới nội tâm phong phú.</p>
+                     <p><strong>Hoàng Văn Hải:</strong> Hoàng Văn Hải là một sự kết hợp độc đáo: chơi game giỏi, học Toán giỏi, vui tính nhưng đôi khi lại hay cọc cằn. Sự đối lập này tạo nên một tính cách rất thật và khó đoán.</p>
+                     <p><strong>Phùng Đoàn Đan Linh:</strong> Đan Linh vẫn chưa hoàn toàn hòa đồng với mọi người trong lớp, nhưng bù lại bạn ấy có khả năng học tiếng Anh rất tốt. Điều này cho thấy Linh có những sở trường riêng và có thể cần thêm thời gian để mở lòng hơn.</p>
+                     <p><strong>Ngô Thị Hà Thương:</strong> Hà Thương là một bạn rất năng động khi đã đi làm thêm (làm trợ giảng) từ lớp 11. Dù hay bị các bạn trêu chọc, bạn ấy vẫn giữ được sự vui tính, cho thấy sự lạc quan và khả năng đối mặt với trêu đùa một cách thoải mái.</p>
+                     <p><strong>Hồ Lê Thái Uyên:</strong> Thái Uyên được gọi là "Girl phố của lớp". Danh xưng này có thể liên quan đến phong cách ăn mặc, ngoại hình hoặc sự sành điệu, hiện đại của bạn ấy, làm nổi bật cá tính riêng trong lớp.</p>
+                     <p><strong>Nguyễn Việt Quang:</strong> Nguyễn Việt Quang được mô tả đơn giản là "đẹp trai". Nét nổi bật về ngoại hình này chắc hẳn là điều nhiều bạn trong lớp chú ý và ấn tượng về Quang.</p>
+                     <p><strong>Vũ Quốc Huy:</strong> Vũ Quốc Huy được nhắc đến với vẻ ngoài "trai đẹp" và còn học rất giỏi. Bạn ấy còn được mọi người trêu gọi là "boy Hàn Quốc", có thể vì phong cách hoặc ngoại hình giống với hình tượng các chàng trai Hàn Quốc.</p>
+                 </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Made with ❤️ by Luonghii & DK60 Collective</p>
+    </footer>
+
+    <script>
+        // Đợi toàn bộ nội dung trang (DOM) tải xong
+        document.addEventListener("DOMContentLoaded", function() {
+            // Thêm class 'fade-in' vào thẻ body để kích hoạt hiệu ứng CSS
+            document.body.classList.add('fade-in');
+
+            // (Tùy chọn) Thêm hiệu ứng fade-out khi chuyển trang giống index.html
+            const links = document.querySelectorAll("nav a[href$='.html']"); // Chỉ chọn link trong nav
+            for (let link of links) {
+                link.addEventListener("click", function (e) {
+                    // Ngăn trình duyệt chuyển trang ngay lập tức
+                    e.preventDefault();
+                    const href = this.getAttribute("href");
+                    // Làm mờ trang hiện tại đi
+                    document.body.style.opacity = 0;
+                    // Đợi hiệu ứng mờ hoàn tất rồi mới chuyển trang
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 500); // Thời gian đợi (ms), nên khớp với transition trong CSS body
+                });
+            }
+        });
+
+        // (Tùy chọn) Thêm hiệu ứng di chuyển background theo chuột giống index.html
+        document.addEventListener("mousemove", function(e) {
+            // Tính toán độ lệch dựa trên vị trí chuột
+            const x = (e.clientX / window.innerWidth - 0.5) * 15; // Giảm độ lệch một chút
+            const y = (e.clientY / window.innerHeight - 0.5) * 15;
+            // Áp dụng vị trí mới cho background-position của body
+            document.body.style.backgroundPosition = `${50 - x}% ${50 - y}%`;
+        });
+
+        // (Tùy chọn) Thêm hiệu ứng đổi favicon giống index.html
+        const favicons = [
+            'images/logo/logo1.png',
+            'images/logo/logo2.png',
+            'images/logo/logo3.png',
+            'images/logo/logo4.png',
+            'images/logo/logo5.png'
+            // Đảm bảo các ảnh này tồn tại nhé!
+        ];
+        let currentFaviconIndex = 0;
+        const dynamicFavicon = document.getElementById('dynamic-favicon');
+
+        if (dynamicFavicon) { // Kiểm tra xem thẻ favicon có tồn tại không
+             setInterval(() => {
+                dynamicFavicon.setAttribute('href', favicons[currentFaviconIndex]);
+                currentFaviconIndex = (currentFaviconIndex + 1) % favicons.length;
+            }, 1000); // Đổi mỗi giây
+        } else {
+            console.warn("Không tìm thấy thẻ link favicon với id 'dynamic-favicon'.");
+        }
+    </script>
+</body>
+</html>

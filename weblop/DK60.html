@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đây là nơi lưu giữ kỉ niệm của DK60 ❤</title>
+  <link id="dynamic-favicon" rel="icon" type="image/png" href="images/logo/logo1.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://w.soundcloud.com/player/api.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+
+    #content-frame {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      z-index: 0;
+    }
+
+    .popup {
+      z-index: 1000;
+      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+      opacity: 0;
+      transform-origin: bottom left;
+      transform: scale(0.95) translateY(10px);
+      pointer-events: none;
+    }
+    .popup.active {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+    }
+
+    .music-buttons {
+      position: fixed;
+      bottom: 5px;
+      left: 5px;
+      display: flex;
+      gap: 10px;
+      z-index: 999;
+    }
+
+    .circle-btn {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+    }
+
+    .soundcloud-attribution {
+      font-size: 10px;
+      color: #cccccc;
+      padding: 5px;
+      background-color: #f2f2f2;
+      border-top: 1px solid #e0e0e0;
+      text-align: center;
+    }
+
+    .soundcloud-attribution a {
+      color: #cccccc;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<iframe id="content-frame" src="index.html"></iframe>
+<iframe src="about.html" style="display: none;"></iframe>
+<iframe src="contact.html" style="display: none;"></iframe>
+<iframe src="thanh-vien-lop.html" style="display: none;"></iframe>
+
+
+<!-- Nút mở nhạc -->
+<div class="music-buttons">
+  <button id="btnSpotify" class="circle-btn bg-green-500 text-white hover:bg-green-600">
+    <svg role="img" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+  <title>Spotify</title>
+  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12
+   12-5.373 12-12S18.627 0 12 0zm5.901 17.541c-.228.36-.66.48-1.021.252-2.844-1.743-6.388-2.134-10.448-1.158-.408.096-.816-.12-.912-.528-.096-.408.12-.816.528-.912
+   4.368-1.044 8.191-.606 11.316 1.308.36.228.48.66.252 1.021zm1.026-2.33c-.276.444-.816.576-1.26.3-3.216-1.98-8.04-2.556-11.824-1.38a.793.793 0 01-.888-.708.793.793
+   0 01.708-.888c4.272-1.296 9.588-.66 13.116 1.644.444.276.576.816.3 1.26zm.114-2.436C14.59 9.628 9.524 9.42 5.568 10.588a1
+   1 0 01-1.092-.996 1 1 0 01.996-1.092c4.488-1.26 10.116-1.02
+   14.688 1.908.516.324.672.996.348 1.512-.324.516-.996.672-1.512.348z"/>
+</svg>
+      <path d="M12 0C5.373...z"/></svg>
+  </button>
+  <button id="btnSoundCloud" class="circle-btn bg-orange-500 text-white hover:bg-orange-600">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+  <title>SoundCloud</title>
+  <path d="M7 17.9981V6.99805C7 6.72191 6.77614 6.49805 6.5 6.49805C6.22386 6.49805 6 6.72191 6 6.99805V17.9981C6 18.2742 6.22386 18.4981 6.5 18.4981C6.77614
+   18.4981 7 18.2742 7 17.9981Z"/>
+  <path d="M10 17.9981V10.9981C10 10.7219 9.77614 10.4981 9.5 10.4981C9.22386 10.4981 9 10.7219 9 10.9981V17.9981C9 18.2742 9.22386 18.4981 9.5 18.4981C9.77614
+   18.4981 10 18.2742 10 17.9981Z"/>
+  <path d="M4 14.9981V12.9981C4 12.7219 3.77614 12.4981 3.5 12.4981C3.22386 12.4981 3 12.7219 3 12.9981V14.9981C3 15.2742 3.22386 15.4981 3.5 15.4981C3.77614
+   15.4981 4 15.2742 4 14.9981Z"/>
+  <path d="M13 17.9981V4.99805C13 4.72191 12.7761 4.49805 12.5 4.49805C12.2239 4.49805 12 4.72191 12 4.99805V17.9981C12 18.2742 12.2239 18.4981 12.5 18.4981C12.7761
+   18.4981 13 18.2742 13 17.9981Z"/>
+  <path d="M16 17.9981V9.99805C16 9.72191 15.7761 9.49805 15.5 9.49805C15.2239 9.49805 15 9.72191 15 9.99805V17.9981C15 18.2742 15.2239 18.4981 15.5 18.4981C15.7761
+   18.4981 16 18.2742 16 17.9981Z"/>
+  <path d="M19 17.9981V13.9981C19 13.7219 18.7761 13.4981 18.5 13.4981C18.2239 13.4981 18 13.7219 18 13.9981V17.9981C18 18.2742 18.2239 18.4981 18.5 18.4981C18.7761
+   18.4981 19 18.2742 19 17.9981Z"/>
+  <path d="M22 17.9981V11.9981C22 11.7219 21.7761 11.4981 21.5 11.4981C21.2239 11.4981 21 11.7219 21 11.9981V17.9981C21 18.2742 21.2239 18.4981 21.5 18.4981C21.7761
+   18.4981 22 18.2742 22 17.9981Z"/>
+</svg>
+      <path d="M7 17.9981V6.99805...z"/></svg>
+  </button>
+</div>
+
+<!-- Popup Spotify -->
+<div id="popupSpotify" class="popup fixed bottom-20 left-5 w-[350px] h-[28rem] bg-black text-white border border-gray-300 rounded-lg shadow-lg overflow-hidden flex flex-col">
+  <div class="flex justify-between items-center p-2 bg-gray-100 text-black border-b border-gray-200">
+    <span class="font-semibold text-green-600">Spotify Player</span>
+    <button class="close-popup" data-popup="popupSpotify" title="Đóng">×</button>
+  </div>
+  <iframe id="spotifyPlayer" class="flex-grow" src="https://open.spotify.com/embed/playlist/3qcJwLDd1rVHbJTtrte3Gi?utm_source=generator&theme=0"
+    width="100%" height="100%" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+</div>
+
+<!-- Popup SoundCloud -->
+<div id="popupSoundCloud" class="popup fixed bottom-20 left-5 w-[350px] h-[28rem] bg-white text-black border border-gray-300 rounded-lg shadow-lg overflow-hidden flex flex-col">
+  <div class="flex justify-between items-center p-2 bg-gray-100 border-b border-gray-200">
+    <span class="font-semibold text-orange-600">SoundCloud Player</span>
+    <button class="close-popup" data-popup="popupSoundCloud" title="Đóng">×</button>
+  </div>
+  <iframe class="soundcloud-iframe flex-grow" width="100%" height="100%" scrolling="no" frameborder="no"
+    allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2012988732&color=%23430ae6&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false"></iframe>
+  <div class="soundcloud-attribution">
+    <a href="https://soundcloud.com/luonghiii" target="_blank">✪ Xiang Ye ✪</a> · 
+    <a href="https://soundcloud.com/luonghiii/sets/up-nhe" target="_blank">Bản quyền thuộc về Luonghii:3</a>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const btnSpotify = document.getElementById('btnSpotify');
+  const btnSoundCloud = document.getElementById('btnSoundCloud');
+  const popupSpotify = document.getElementById('popupSpotify');
+  const popupSoundCloud = document.getElementById('popupSoundCloud');
+  const closeButtons = document.querySelectorAll('.close-popup');
+
+  function closeAllPopups() {
+    popupSpotify?.classList.remove('active');
+    popupSoundCloud?.classList.remove('active');
+  }
+
+  function openPopup(popup) {
+    closeAllPopups();
+    popup.classList.add('active');
+  }
+
+  btnSpotify?.addEventListener('click', e => {
+    e.stopPropagation();
+    openPopup(popupSpotify);
+  });
+
+  btnSoundCloud?.addEventListener('click', e => {
+    e.stopPropagation();
+    openPopup(popupSoundCloud);
+  });
+
+  closeButtons.forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const target = btn.getAttribute("data-popup");
+      document.getElementById(target)?.classList.remove('active');
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (![btnSpotify, btnSoundCloud].some(btn => btn.contains(e.target))) {
+      closeAllPopups();
+    }
+  });
+});
+</script>
+<script>
+const favicons = [
+  'images/logo/logo1.png',
+  'images/logo/logo2.png',
+  'images/logo/logo3.png',
+  'images/logo/logo4.png',
+  'images/logo/logo5.png'
+];
+let current = 0;
+setInterval(() => {
+  const favicon = document.getElementById('dynamic-favicon');
+  favicon.setAttribute('href', favicons[current]);
+  current = (current + 1) % favicons.length;
+}, 0,1);
+</script>
+</body>
+</html>
